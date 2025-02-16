@@ -1,43 +1,28 @@
 "use client"
 
 import { Plus } from "lucide-react"
-import { useState } from "react"
 import { cn } from "@/lib/utils"
 
 export function CreateButton({ onClick }) {
-  const [isPressed, setIsPressed] = useState(false)
-
   return (
     <button
       onClick={onClick}
-      onTouchStart={() => setIsPressed(true)}
-      onTouchEnd={() => setIsPressed(false)}
-      onTouchCancel={() => setIsPressed(false)}
       className={cn(
-        "relative h-[58px] w-[58px] rounded-full overflow-hidden",
-        "shadow-lg shadow-brand-blue-start/25 dark:shadow-brand-blue-dark/25",
-        "transition-all duration-200",
-        isPressed && "transform scale-[0.97]"
+        // Base styles
+        "h-14 w-14 rounded-full",
+        "bg-[#007AFF]",
+        "flex items-center justify-center",
+        "shadow-lg shadow-blue-500/25",
+        // Position
+        "absolute -top-6 left-1/2 -translate-x-1/2",
+        // Animation
+        "transition-transform duration-200",
+        "hover:scale-105 active:scale-95",
+        // Dark mode
+        "dark:bg-brand-blue-dark dark:shadow-brand-blue-dark/25"
       )}
     >
-      {/* Gradient Background */}
-      <div className={cn(
-        "absolute inset-0",
-        "bg-gradient-to-r from-brand-blue-start via-brand-blue-mid to-brand-blue-end",
-        "dark:from-brand-blue-dark dark:via-brand-blue-dark dark:to-brand-blue-dark",
-        "transition-opacity duration-200",
-        isPressed && "opacity-90"
-      )} />
-
-      <Plus 
-        className={cn(
-          "relative z-10",
-          "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
-          "h-7 w-7 text-white",
-          "transition-transform duration-200",
-          isPressed && "scale-[0.97]"
-        )}
-      />
+      <Plus className="h-7 w-7 text-white" />
     </button>
   )
 }

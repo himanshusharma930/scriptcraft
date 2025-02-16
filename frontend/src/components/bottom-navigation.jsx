@@ -1,8 +1,9 @@
 "use client"
 
-import { Home, Search, FileText, User, Sparkles } from "lucide-react"
+import { Home, Search, FileText, User } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { CreateButton } from "./create-button"
 
 export function BottomNavigation() {
   const router = useRouter()
@@ -13,7 +14,9 @@ export function BottomNavigation() {
                     bg-brand-light-bg/90 dark:bg-brand-dark-bg/90 
                     backdrop-blur-xl border-t 
                     border-brand-light-border dark:border-brand-dark-border">
-      <div className="flex items-center justify-between h-[83px] px-6 pt-2 pb-7 max-w-md mx-auto">
+      <div className="relative flex items-center justify-between 
+                      h-[83px] px-6 pt-2 pb-7 max-w-md mx-auto">
+        {/* Left Items */}
         <div className="flex items-center gap-16">
           <NavItem 
             icon={<Home className="h-6 w-6" />} 
@@ -29,22 +32,10 @@ export function BottomNavigation() {
           />
         </div>
 
-        {/* Center AI Button */}
-        <div className="absolute left-1/2 -translate-x-1/2">
-          <button
-            onClick={() => router.push('/ai-assistant')}
-            className={cn(
-              "relative h-[58px] w-[58px] rounded-full -mt-8",
-              "bg-gradient-to-r from-brand-blue-start to-brand-blue-end",
-              "dark:from-brand-blue-dark dark:to-brand-blue-dark",
-              "shadow-lg shadow-brand-blue-start/25 dark:shadow-brand-blue-dark/25",
-              "transition-transform duration-200 active:scale-95"
-            )}
-          >
-            <Sparkles className="h-7 w-7 text-white" />
-          </button>
-        </div>
+        {/* Create Button */}
+        <CreateButton onClick={() => router.push('/script-editor')} />
 
+        {/* Right Items */}
         <div className="flex items-center gap-16">
           <NavItem 
             icon={<FileText className="h-6 w-6" />} 

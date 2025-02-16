@@ -65,12 +65,15 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* iOS safe area handling without status bar */
+  /* iOS safe area handling */
   @supports (padding: max(0px)) {
     .container {
       padding-left: max(1rem, env(safe-area-inset-left));
       padding-right: max(1rem, env(safe-area-inset-right));
-      padding-bottom: max(5.5rem, env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav {
+      padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
     }
   }
 
@@ -91,6 +94,11 @@
     .tap-highlight:active {
       @apply bg-black/5 dark:bg-white/5;
     }
+  }
+
+  /* Add smooth transition for create button */
+  .create-button-transition {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
