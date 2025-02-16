@@ -53,8 +53,35 @@
   * {
     @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Hide scrollbar but maintain functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* iOS-style tap highlight */
+  @media (hover: hover) {
+    .tap-highlight {
+      @apply transition-colors duration-200;
+    }
+    .tap-highlight:active {
+      @apply bg-black/5 dark:bg-white/5;
+    }
   }
 }
 
