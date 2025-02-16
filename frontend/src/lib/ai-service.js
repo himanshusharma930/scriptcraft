@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { debugLogger, DEBUG_LEVELS } from './debug-utils'
 
 const api = axios.create({
   baseURL: 'http://167.71.198.52:15432',
@@ -9,17 +8,8 @@ const api = axios.create({
   }
 })
 
-export async function sendMessage(content) {
-  const requestId = Math.random().toString(36).substring(7)
-  
+export async function sendChatMessage(message) {
   try {
-    debugLogger.log(DEBUG_LEVELS.INFO, 'AI_REQUEST', `Starting request ${requestId}`, {
-      content,
-      model: 'o1-mini'
-    })
-
-    const startTime = performance.now()
-
     const response = await api.post('/chat/completions', {
       model: 'o1-mini',
       messages: [
@@ -29,26 +19,13 @@ export async function sendMessage(content) {
         },
         {
           role: 'user',
-          content
+          content: message
         }
       ]
     })
-
-    const endTime = performance.now()
-    const responseTime = endTime - startTime
-
-    debugLogger.log(DEBUG_LEVELS.INFO, 'AI_RESPONSE', `Request ${requestId} completed`, {
-      responseTime: `${responseTime.toFixed(2)}ms`,
-      status: response.status,
-      data: response.data
-    })
-
     return response.data
   } catch (error) {
-    debugLogger.log(DEBUG_LEVELS.ERROR, 'AI_ERROR', `Request ${requestId} failed`, {
-      error: error.message,
-      stack: error.stack
-    })
+    console.error('Chat error:', error)
     throw error
   }
 }
