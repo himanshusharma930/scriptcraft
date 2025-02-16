@@ -5,23 +5,54 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Mic, Send, Sparkles, Image, Link, Video } from "lucide-react"
+import { Mic, Send, Sparkles } from "lucide-react"
 import { MessageBubble } from "./message-bubble"
+import { aiService } from "@/lib/ai-service"
 import { cn } from "@/lib/utils"
-
-const INITIAL_MESSAGE = {
-  type: 'assistant',
-  content: "Hello! I'm your YouTube content assistant. How can I help you create amazing videos today?",
-  showSuggestions: true
-}
+import { useToast } from "@/hooks/use-toast"
 
 export function AiAssistantSheet({ open, onOpenChange }) {
-  const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState([INITIAL_MESSAGE])
-  const [isRecording, setIsRecording] = useState(false)
+  const [messages, setMessages] = useState([])
+  const [inputMessage, setInputMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const scrollRef = useRef(null)
+  const { toast } = useToast()
 
-  // Auto scroll
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return
+
+    try {
+      setIsLoading(true)
+      
+      // Add user message
+      const userMessage = { role: 'user', content: inputMessage }
+      setMessages(prev => [...prev, userMessage])
+      setInputMessage("")
+
+      // Get AI response
+      const response = await aiService.chat([...messages, userMessage])
+      
+      // Add AI response
+      if (response.choices && response.choices[0]) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: response.choices[0].message.content
+        }])
+      } else {
+        throw new Error('Invalid response format')
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to get AI response",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Auto scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -30,33 +61,6 @@ export function AiAssistantSheet({ open, onOpenChange }) {
       })
     }
   }, [messages])
-
-  const handleSend = async () => {
-    if (!message.trim()) return
-    
-    // Add user message
-    setMessages(prev => [...prev, { type: 'user', content: message }])
-    setMessage("")
-    
-    // Add loading message
-    setMessages(prev => [...prev, {
-      type: 'assistant',
-      content: "",
-      isLoading: true
-    }])
-
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev.slice(0, -1),
-        {
-          type: 'assistant',
-          content: "I'll help you create engaging content! Let's explore some options:",
-          showSuggestions: true
-        }
-      ])
-    }, 1500)
-  }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -67,51 +71,59 @@ export function AiAssistantSheet({ open, onOpenChange }) {
           "bg-brand-light-bg dark:bg-brand-dark-bg"
         )}
       >
-        {/* Quick Actions */}
-        <div className="px-6 py-2 border-b border-brand-light-border dark:border-brand-dark-border">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
-            <QuickAction icon={<Image />} label="Thumbnail" />
-            <QuickAction icon={<Video />} label="Script" />
-            <QuickAction icon={<Link />} label="Research" />
+        <SheetTitle className="sr-only">AI Assistant</SheetTitle>
+
+        {/* Header */}
+        <div className="sticky top-0 z-50 px-6 pt-3 pb-4 
+                       bg-brand-light-bg dark:bg-brand-dark-bg 
+                       border-b border-brand-light-border dark:border-brand-dark-border">
+          <div className="w-[36px] h-[5px] bg-brand-gray-100 dark:bg-brand-dark-secondary 
+                         rounded-full mx-auto mb-4" />
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r 
+                          from-brand-blue-start to-brand-blue-end 
+                          flex items-center justify-center">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-[17px] font-semibold 
+                           text-brand-light-text-primary dark:text-brand-dark-text-primary">
+                YouTube Assistant
+              </h3>
+              <p className="text-[13px] text-brand-gray-300 dark:text-brand-gray-dark">
+                Powered by AI
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Messages */}
-        <ScrollArea ref={scrollRef} className="h-[calc(85vh-220px)] px-6 py-4">
+        <ScrollArea 
+          ref={scrollRef}
+          className="h-[calc(85vh-180px)] px-6 py-4"
+        >
           <div className="space-y-4">
             {messages.map((msg, i) => (
               <MessageBubble 
                 key={i}
                 message={msg}
-                onSuggestionSelect={(suggestion) => setMessage(suggestion)}
+                isLoading={isLoading && i === messages.length - 1}
               />
             ))}
           </div>
         </ScrollArea>
 
         {/* Input Area */}
-        <div className="sticky bottom-0 px-6 py-4 bg-brand-light-bg dark:bg-brand-dark-bg
-                        border-t border-brand-light-border dark:border-brand-dark-border">
+        <div className="sticky bottom-0 px-6 py-4 
+                       bg-brand-light-bg dark:bg-brand-dark-bg 
+                       border-t border-brand-light-border dark:border-brand-dark-border">
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn(
-                "h-10 w-10 rounded-full shrink-0",
-                "text-brand-gray-300 dark:text-brand-gray-dark",
-                "hover:bg-brand-gray-100 dark:hover:bg-brand-dark-secondary",
-                isRecording && "text-brand-blue-start dark:text-brand-blue-dark"
-              )}
-              onClick={() => setIsRecording(!isRecording)}
-            >
-              <Mic className="h-5 w-5" />
-            </Button>
-            
             <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="Message YouTube Assistant..."
+              disabled={isLoading}
               className={cn(
                 "h-10 px-4",
                 "bg-brand-gray-100 dark:bg-brand-dark-secondary",
@@ -122,10 +134,10 @@ export function AiAssistantSheet({ open, onOpenChange }) {
             />
             
             <Button
-              onClick={handleSend}
-              disabled={!message.trim()}
+              onClick={handleSendMessage}
+              disabled={!inputMessage.trim() || isLoading}
               className={cn(
-                "h-10 w-10 rounded-full shrink-0",
+                "h-10 w-10 rounded-full",
                 "bg-brand-blue-start dark:bg-brand-blue-dark",
                 "hover:bg-brand-blue-start/90 dark:hover:bg-brand-blue-dark/90",
                 "disabled:opacity-50",
@@ -138,22 +150,5 @@ export function AiAssistantSheet({ open, onOpenChange }) {
         </div>
       </SheetContent>
     </Sheet>
-  )
-}
-
-function QuickAction({ icon, label }) {
-  return (
-    <Button
-      variant="ghost"
-      className={cn(
-        "h-9 px-4 rounded-full shrink-0",
-        "text-brand-gray-300 dark:text-brand-gray-dark",
-        "hover:bg-brand-gray-100 dark:hover:bg-brand-dark-secondary",
-        "transition-all duration-200"
-      )}
-    >
-      {icon}
-      <span className="ml-2 text-sm">{label}</span>
-    </Button>
   )
 }

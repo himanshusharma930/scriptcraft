@@ -1,83 +1,72 @@
 import axios from 'axios'
-import { generateSystemPrompt, generateUserPrompt } from './prompt-engineering'
 
-export class AIService {
-  constructor(apiKey) {
+const CODESTRAL_API_KEY = 'Vss1soC3SsvEHFHZC02VKpRkiWsUevxl'
+const BASE_URL = 'https://codestral.mistral.ai/v1'
+
+class AIService {
+  constructor() {
     this.api = axios.create({
-      baseURL: 'https://codestral.mistral.ai/v1',
+      baseURL: BASE_URL,
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      }
+        'Authorization': `Bearer ${CODESTRAL_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      timeout: 30000 // 30 second timeout
     })
-    this.conversationMemory = []
+
+    // Add response interceptor for error handling
+    this.api.interceptors.response.use(
+      response => response,
+      error => {
+        console.error('API Error:', error.response?.data || error.message)
+        throw new Error(error.response?.data?.error || 'Failed to connect to AI service')
+      }
+    )
   }
 
-  async generateResponse(request, context) {
-    const systemPrompt = generateSystemPrompt(context)
-    const userPrompt = generateUserPrompt(request, context)
-
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      ...this.conversationMemory,
-      { role: 'user', content: userPrompt }
-    ]
-
+  async chat(messages, options = {}) {
     try {
       const response = await this.api.post('/chat/completions', {
         model: 'codestral/codestral-latest',
-        messages,
-        temperature: context.creativity || 0.7,
-        max_tokens: 1000,
-        stream: true
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful YouTube content creation assistant.'
+          },
+          ...messages
+        ],
+        temperature: options.temperature || 0.7,
+        max_tokens: options.maxTokens || 1000,
+        stream: options.stream || false
       })
-
-      // Update conversation memory
-      this.conversationMemory.push(
-        { role: 'user', content: userPrompt },
-        { role: 'assistant', content: response.data.choices[0].message.content }
-      )
-
-      // Maintain memory size
-      if (this.conversationMemory.length > 10) {
-        this.conversationMemory = this.conversationMemory.slice(-10)
-      }
 
       return response.data
     } catch (error) {
-      console.error('AI response generation error:', error)
+      console.error('Chat completion error:', error)
       throw error
     }
   }
 
-  async generateContentSuggestions(content, type) {
-    const context = {
-      type,
-      goals: ['Improve engagement', 'Optimize for algorithm'],
-      experienceLevel: 'intermediate',
-      contentType: 'youtube_video',
-      focusAreas: ['hook', 'structure', 'engagement']
-    }
-
-    const prompt = generateUserPrompt(content, context)
-
+  async generateSuggestions(prompt, type) {
     try {
       const response = await this.api.post('/fim/completions', {
         model: 'codestral/codestral-latest',
         prompt,
         temperature: 0.8,
-        max_tokens: 500
+        max_tokens: 500,
+        stream: false
       })
 
       return response.data
     } catch (error) {
-      console.error('Content suggestions error:', error)
+      console.error('Suggestion generation error:', error)
       throw error
     }
   }
 }
 
-export const aiService = new AIService('Vss1soC3SsvEHFHZC02VKpRkiWsUevxl')
+export const aiService = new AIService()
 
 export const CONTENT_PROMPTS = {
   scriptWriting: "Create a YouTube script outline for:",
