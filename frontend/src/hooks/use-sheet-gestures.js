@@ -15,14 +15,14 @@ export function useSheetGestures({ onClose, threshold = 0.3 }) {
   const handleTouchMove = (e) => {
     if (!isDragging) return
     const deltaY = e.touches[0].clientY - startY
-    if (deltaY < 0) return // Prevent dragging up
+    if (deltaY < 0) return
     setCurrentY(deltaY)
   }
 
   const handleTouchEnd = () => {
     if (!isDragging) return
     
-    const sheetHeight = window.innerHeight * 0.85 // 85vh
+    const sheetHeight = window.innerHeight * 0.85
     const dismissThreshold = sheetHeight * threshold
     
     if (currentY > dismissThreshold) {
