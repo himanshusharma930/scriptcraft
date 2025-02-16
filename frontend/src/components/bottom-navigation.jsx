@@ -3,7 +3,6 @@
 import { Home, Search, FileText, User } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { CreateButton } from "./create-button"
 
 export function BottomNavigation() {
   const router = useRouter()
@@ -13,43 +12,33 @@ export function BottomNavigation() {
     <div className="fixed bottom-0 left-0 right-0 
                     bg-brand-light-bg/90 dark:bg-brand-dark-bg/90 
                     backdrop-blur-xl border-t 
-                    border-brand-light-border dark:border-brand-dark-border">
-      <div className="relative flex items-center justify-between 
-                      h-[83px] px-6 pt-2 pb-7 max-w-md mx-auto">
-        {/* Left Items */}
-        <div className="flex items-center gap-16">
-          <NavItem 
-            icon={<Home className="h-6 w-6" />} 
-            label="Projects" 
-            active={pathname === '/'} 
-            onClick={() => router.push('/')}
-          />
-          <NavItem 
-            icon={<Search className="h-6 w-6" />} 
-            label="Research"
-            active={pathname === '/research'}
-            onClick={() => router.push('/research')}
-          />
-        </div>
-
-        {/* Create Button */}
-        <CreateButton onClick={() => router.push('/script-editor')} />
-
-        {/* Right Items */}
-        <div className="flex items-center gap-16">
-          <NavItem 
-            icon={<FileText className="h-6 w-6" />} 
-            label="Publishing"
-            active={pathname === '/publishing'}
-            onClick={() => router.push('/publishing')}
-          />
-          <NavItem 
-            icon={<User className="h-6 w-6" />} 
-            label="Profile"
-            active={pathname === '/profile'}
-            onClick={() => router.push('/profile')}
-          />
-        </div>
+                    border-brand-light-border dark:border-brand-dark-border
+                    z-40">
+      <div className="flex items-center justify-around h-[83px] px-6 pt-2 pb-7 max-w-md mx-auto">
+        <NavItem 
+          icon={<Home className="h-6 w-6" />} 
+          label="Projects" 
+          active={pathname === '/'} 
+          onClick={() => router.push('/')}
+        />
+        <NavItem 
+          icon={<Search className="h-6 w-6" />} 
+          label="Research"
+          active={pathname === '/research'}
+          onClick={() => router.push('/research')}
+        />
+        <NavItem 
+          icon={<FileText className="h-6 w-6" />} 
+          label="Publishing"
+          active={pathname === '/publishing'}
+          onClick={() => router.push('/publishing')}
+        />
+        <NavItem 
+          icon={<User className="h-6 w-6" />} 
+          label="Profile"
+          active={pathname === '/profile'}
+          onClick={() => router.push('/profile')}
+        />
       </div>
     </div>
   )

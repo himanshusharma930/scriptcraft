@@ -9,17 +9,15 @@ export function CreateButton({ onClick }) {
       onClick={onClick}
       className={cn(
         // Base styles
-        "h-14 w-14 rounded-full",
-        "bg-[#007AFF]",
+        "fixed right-4 bottom-24 h-14 w-14 rounded-full",
+        "bg-brand-blue-start dark:bg-brand-blue-dark",
         "flex items-center justify-center",
-        "shadow-lg shadow-blue-500/25",
-        // Position
-        "absolute -top-6 left-1/2 -translate-x-1/2",
+        "shadow-lg shadow-blue-500/25 dark:shadow-blue-900/25",
         // Animation
         "transition-transform duration-200",
         "hover:scale-105 active:scale-95",
-        // Dark mode
-        "dark:bg-brand-blue-dark dark:shadow-brand-blue-dark/25"
+        // Z-index
+        "z-50"
       )}
     >
       <Plus className="h-7 w-7 text-white" />
