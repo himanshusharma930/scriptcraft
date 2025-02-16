@@ -38,7 +38,7 @@ export function CreateProjectSheet({ open, onOpenChange }) {
       <SheetContent 
         side="bottom" 
         className={cn(
-          "px-0 pt-0 pb-8 h-[85vh] rounded-t-[10px] border-t-0",
+          "px-0 pt-0 pb-8 h-[85vh] rounded-t-[32px] border-t-0",
           "bg-[#F2F2F7] overflow-hidden",
           "motion-safe:animate-sheet-up",
           isDragging && 'transition-none',
@@ -55,21 +55,8 @@ export function CreateProjectSheet({ open, onOpenChange }) {
         </SheetTitle>
 
         {/* Drag Handle Area */}
-        <div 
-          className={cn(
-            "sticky top-0 z-50 bg-[#F2F2F7] pt-2 pb-4",
-            "touch-none cursor-grab active:cursor-grabbing",
-            isAtTop ? "pb-4" : "pb-2 shadow-sm"
-          )}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          <div className={cn(
-            "w-[36px] h-[5px] bg-[#E5E5EA] rounded-full mx-auto",
-            "transition-transform duration-200",
-            isDragging && "scale-x-110"
-          )} />
+        <div className="sticky top-0 z-50 bg-[#F2F2F7] pt-3 pb-4">
+          <div className="w-[36px] h-[5px] bg-[#E5E5EA] rounded-full mx-auto" />
         </div>
 
         {/* Scrollable Content */}
@@ -85,7 +72,7 @@ export function CreateProjectSheet({ open, onOpenChange }) {
           <div className="space-y-6 pb-8">
             {/* Visual Title (separate from SheetTitle) */}
             <div className="text-center mb-6">
-              <h2 className="text-[22px] font-semibold text-[#1C1C1E]">
+              <h2 className="text-[24px] font-semibold text-[#1C1C1E]">
                 Create New Project
               </h2>
             </div>
@@ -97,7 +84,7 @@ export function CreateProjectSheet({ open, onOpenChange }) {
                 <Label className="text-[17px] text-[#1C1C1E]">Project Title</Label>
                 <Input 
                   placeholder="Enter project title"
-                  className="h-[44px] bg-white border-[#E5E5EA] 
+                  className="h-[46px] bg-white border-[#E5E5EA] rounded-xl
                            text-[17px] placeholder:text-[#8E8E93]
                            focus:ring-2 focus:ring-[#007AFF]
                            transition-shadow duration-200"
@@ -113,7 +100,7 @@ export function CreateProjectSheet({ open, onOpenChange }) {
                       key={template}
                       variant={selectedTemplate === template ? "default" : "outline"}
                       className={cn(
-                        "h-[66px] rounded-[12px] text-[15px]",
+                        "h-[70px] rounded-2xl text-[15px]",
                         "transition-all duration-200",
                         selectedTemplate === template 
                           ? 'bg-[#007AFF] hover:bg-[#007AFF]/90 text-white shadow-sm' 
@@ -142,9 +129,9 @@ export function CreateProjectSheet({ open, onOpenChange }) {
               {/* Create Button */}
               <Button 
                 className={cn(
-                  "w-full h-[50px] mt-8",
+                  "w-full h-[54px] mt-8",
                   "bg-[#007AFF] hover:bg-[#007AFF]/90",
-                  "text-[17px] font-semibold rounded-[12px]",
+                  "text-[17px] font-semibold rounded-2xl",
                   "transition-all duration-200",
                   "active:scale-[0.98]"
                 )}

@@ -15,12 +15,13 @@ export function CreateButton({ onClick }) {
       onTouchCancel={() => setIsPressed(false)}
       className={cn(
         // Base styles
-        `relative h-[56px] w-[56px] rounded-full
-         bg-[#007AFF] select-none outline-none`,
-        // Transition
-        `transition-all duration-200 ease-out`,
+        `relative h-[58px] w-[58px] rounded-full
+         bg-[#007AFF] select-none outline-none
+         shadow-lg shadow-blue-500/25`,
+        // Animation
+        `transition-all duration-200`,
         // Active state
-        isPressed && 'transform scale-[0.97] bg-[#0A84FF]'
+        isPressed && 'transform scale-[0.97] bg-[#0A84FF] shadow-md'
       )}
     >
       <Plus 
