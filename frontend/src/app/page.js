@@ -9,66 +9,63 @@ import { Search, Filter, Settings, Home, FileText, Globe, User, Plus } from "luc
 import { CreateProjectSheet } from "@/components/create-project-sheet"
 import { CreateButton } from "@/components/create-button"
 
-// Extract static class names
-const STATIC_CLASSES = {
-  header: "flex justify-between items-center py-4 sticky top-0 bg-[#F2F2F7]/80 backdrop-blur-lg z-10",
-  searchBar: "h-[46px] pl-12 pr-12 bg-white border-0 rounded-2xl shadow-sm placeholder:text-[#8E8E93] focus-visible:ring-2 focus-visible:ring-[#007AFF]",
-  statsCard: "rounded-3xl border-0 bg-gradient-to-r from-[#007AFF] to-[#0A84FF] shadow-lg overflow-hidden",
-  projectCard: "p-4 bg-white rounded-2xl border-[#E5E5EA] shadow-sm hover:shadow-md transition-all",
-  tabBar: "fixed bottom-0 left-0 right-0 bg-[#F2F2F7]/90 backdrop-blur-lg border-t border-[#E5E5EA]"
+const SPACING = {
+  container: "px-4 pb-[88px] pt-12", // Account for status bar
+  header: "mb-8",
+  search: "mb-6",
+  filters: "mb-8",
+  stats: "mb-6",
+  projects: "space-y-4",
+  tabBar: "h-[83px] pt-2 pb-7" // iOS standard
 }
 
 export default function HomePage() {
-  const [isClient, setIsClient] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState("All")
 
-  // Ensure client-side rendering for dynamic content
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
   return (
-    <div className="container max-w-md mx-auto px-4 pb-[88px] bg-[#F2F2F7]">
+    <div className={`container max-w-md mx-auto ${SPACING.container} bg-[#F2F2F7]`}>
       {/* Header */}
-      <div className={STATIC_CLASSES.header}>
+      <div className={`flex justify-between items-center ${SPACING.header}`}>
         <h1 className="text-[34px] font-semibold text-[#1C1C1E] leading-tight">
           My Projects
         </h1>
         <Button 
           variant="ghost" 
           size="icon"
-          className="w-10 h-10 rounded-full hover:bg-black/5"
+          className="w-11 h-11 rounded-full hover:bg-black/5"
         >
           <Settings className="h-6 w-6 text-[#007AFF]" />
         </Button>
       </div>
 
       {/* Search */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8E8E93]" />
+      <div className={`relative ${SPACING.search}`}>
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8E8E93]" />
         <Input 
           placeholder="Search projects"
-          className={STATIC_CLASSES.searchBar}
+          className="h-[46px] pl-12 pr-12 bg-white border-0 rounded-2xl
+                   shadow-sm placeholder:text-[#8E8E93]
+                   focus-visible:ring-2 focus-visible:ring-[#007AFF]"
         />
         <Button 
           variant="ghost" 
           size="icon" 
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full"
+          className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full"
         >
           <Filter className="h-5 w-5 text-[#007AFF]" />
         </Button>
       </div>
 
       {/* Filter Tabs */}
-      <div className="bg-[#E5E5EA] p-1 rounded-lg mb-6 flex">
+      <div className={`bg-[#E5E5EA] p-1.5 rounded-lg ${SPACING.filters}`}>
         {["All", "Draft", "In-Progress", "Completed"].map((filter) => (
           <Button
             key={filter}
             variant="ghost"
             onClick={() => setActiveFilter(filter)}
             className={`
-              flex-1 h-8 rounded-md text-sm font-medium transition-all
+              flex-1 h-[32px] rounded-md text-[15px] font-medium
               ${activeFilter === filter 
                 ? 'bg-white text-[#1C1C1E] shadow-sm' 
                 : 'text-[#8E8E93] hover:text-[#1C1C1E]'
@@ -81,48 +78,42 @@ export default function HomePage() {
       </div>
 
       {/* Stats Card */}
-      {isClient && (
-        <Card className={STATIC_CLASSES.statsCard}>
-          <div className="px-6 py-5 grid grid-cols-3 gap-4">
-            <StatItem number="2" label="Total Projects" />
-            <StatItem number="1" label="In Progress" />
-            <StatItem number="0" label="Completed" />
-          </div>
-        </Card>
-      )}
+      <Card className={`bg-gradient-to-r from-[#007AFF] to-[#0A84FF] rounded-3xl border-0 ${SPACING.stats}`}>
+        <div className="px-8 py-6 grid grid-cols-3 gap-6">
+          <StatItem number="2" label="Total Projects" />
+          <StatItem number="1" label="In Progress" />
+          <StatItem number="0" label="Completed" />
+        </div>
+      </Card>
 
       {/* Project Cards */}
-      <div className="space-y-4">
-        {isClient && (
-          <>
-            <ProjectCard 
-              status="In-Progress"
-              title="How AI is Changing Content Creation"
-              description="An in-depth look at AI tools for content creators"
-              date="2024-02-20"
-              progress={65}
-            />
-            <ProjectCard 
-              status="Draft"
-              title="Top 10 Programming Languages 2024"
-              description="Comprehensive guide to trending programming languages"
-              date="2024-02-19"
-              progress={30}
-            />
-          </>
-        )}
+      <div className={SPACING.projects}>
+        <ProjectCard 
+          status="In-Progress"
+          title="How AI is Changing Content Creation"
+          description="An in-depth look at AI tools for content creators"
+          date="2024-02-20"
+          progress={65}
+        />
+        <ProjectCard 
+          status="Draft"
+          title="Top 10 Programming Languages 2024"
+          description="Comprehensive guide to trending programming languages"
+          date="2024-02-19"
+          progress={30}
+        />
       </div>
 
       {/* Bottom Navigation */}
-      <div className={STATIC_CLASSES.tabBar}>
-        <div className="flex justify-around items-center h-[83px] pt-2 pb-7 px-6 max-w-md mx-auto">
-          <TabBarItem icon={<Home />} label="Projects" active />
-          <TabBarItem icon={<Globe />} label="Research" />
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F7]/90 backdrop-blur-lg border-t border-[#E5E5EA]">
+        <div className={`flex justify-around items-center ${SPACING.tabBar} max-w-md mx-auto`}>
+          <TabBarItem icon={<Home className="h-6 w-6" />} label="Projects" active />
+          <TabBarItem icon={<Globe className="h-6 w-6" />} label="Research" />
           <div className="-mt-8">
             <CreateButton onClick={() => setCreateOpen(true)} />
           </div>
-          <TabBarItem icon={<FileText />} label="Publishing" />
-          <TabBarItem icon={<User />} label="Profile" />
+          <TabBarItem icon={<FileText className="h-6 w-6" />} label="Publishing" />
+          <TabBarItem icon={<User className="h-6 w-6" />} label="Profile" />
         </div>
       </div>
 
