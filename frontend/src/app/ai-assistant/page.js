@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ArrowLeft, Send, Sparkles } from "lucide-react"
@@ -12,6 +13,7 @@ import { sendChatMessage } from "@/lib/ai-service"
 
 export default function AiAssistantPage() {
   const router = useRouter()
+  const { theme } = useTheme()
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -24,6 +26,10 @@ export default function AiAssistantPage() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  const handleQuickAction = (action) => {
+    setInputMessage(`Help me with ${action.toLowerCase()}`)
+  }
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
@@ -52,19 +58,20 @@ export default function AiAssistantPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-[#000000] antialiased">
-      {/* iOS-style Container */}
-      <div className="relative h-full max-w-2xl mx-auto bg-[#0A0A0A] 
-                      shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
+    <div className="fixed inset-0 bg-[hsl(var(--ios-background))]">
+      <div className="relative h-full max-w-2xl mx-auto 
+                      bg-[hsl(var(--ios-card))] 
+                      shadow-[0_0_0_1px_rgba(var(--ios-border),0.05)]">
         {/* Subtle System Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-500/[0.03] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b 
+                       from-primary/[0.03] to-transparent" />
 
-        {/* Main Content Container */}
         <div className="relative h-full flex flex-col">
           {/* iOS Header */}
           <div className="flex-none">
-            <div className="sticky top-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-xl 
-                          border-b border-white/[0.06]">
+            <div className="sticky top-0 z-50 
+                          bg-[hsl(var(--ios-card))]/90 backdrop-blur-xl 
+                          border-b border-[hsl(var(--ios-border))]">
               <div className="flex items-center justify-between px-4 h-[52px]">
                 <div className="flex items-center gap-3">
                   <Button
@@ -85,7 +92,7 @@ export default function AiAssistantPage() {
                                     opacity-70" />
                       <div className="relative h-10 w-10 rounded-full 
                                     bg-gradient-to-br from-blue-500 to-blue-600 p-[1.5px]">
-                        <div className="h-full w-full rounded-full bg-[#0A0A0A] 
+                        <div className="h-full w-full rounded-full bg-[hsl(var(--ios-card))] 
                                       flex items-center justify-center">
                           <Sparkles className="h-5 w-5 text-white" />
                         </div>
@@ -122,8 +129,8 @@ export default function AiAssistantPage() {
                     "max-w-[85%] rounded-2xl px-4 py-3",
                     "shadow-sm backdrop-blur-sm",
                     msg.role === 'user' 
-                      ? "bg-blue-500 text-white" 
-                      : "bg-[#1C1C1E] text-white/90"
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-[hsl(var(--ios-secondary))] text-[hsl(var(--ios-text-primary))]"
                   )}>
                     <p className="text-[15px] leading-relaxed">{msg.content}</p>
                   </div>
@@ -136,16 +143,17 @@ export default function AiAssistantPage() {
           {/* Enhanced Input Area */}
           <div className="fixed bottom-8 left-0 right-0 max-w-2xl mx-auto">
             {/* Quick Actions with iOS-style Gradient */}
-            <div className="bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/95 
+            <div className="bg-gradient-to-t from-[hsl(var(--ios-background))] 
+                          via-[hsl(var(--ios-background))]/95 
                           to-transparent pt-16">
               <QuickActions 
-                onSelect={(action) => setInputMessage(`Help me with ${action.toLowerCase()}`)}
+                onSelect={handleQuickAction}
               />
             </div>
 
             {/* iOS-style Input */}
-            <div className="bg-[#0A0A0A]/95 backdrop-blur-xl px-4 py-4 
-                           border-t border-white/[0.06]">
+            <div className="bg-[hsl(var(--ios-card))]/95 backdrop-blur-xl px-4 py-4 
+                           border-t border-[hsl(var(--ios-border))]">
               <div className="max-w-[90%] mx-auto">
                 <div className="flex items-center gap-3">
                   <div className="flex-1 relative">
@@ -154,10 +162,10 @@ export default function AiAssistantPage() {
                       onChange={(e) => setInputMessage(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                       placeholder="Message YouTube Assistant..."
-                      className="h-[44px] pl-4 pr-4 rounded-2xl bg-[#1C1C1E] 
-                                border-white/[0.06] text-white/90 
-                                placeholder:text-white/40
-                                focus:ring-2 focus:ring-blue-500/50 
+                      className="h-[44px] pl-4 pr-4 rounded-2xl bg-[hsl(var(--ios-secondary))] 
+                                border-[hsl(var(--ios-border))] text-[hsl(var(--ios-text-primary))] 
+                                placeholder:text-[hsl(var(--ios-text-secondary))]
+                                focus:ring-2 focus:ring-primary/50 
                                 shadow-[0_2px_8px_rgba(0,0,0,0.12)]
                                 transition-all duration-200"
                     />
@@ -168,8 +176,8 @@ export default function AiAssistantPage() {
                       "h-[44px] w-[44px] rounded-full transition-all duration-200",
                       "shadow-[0_2px_8px_rgba(0,0,0,0.12)]",
                       inputMessage.trim()
-                        ? "bg-blue-500 hover:bg-blue-600 text-white"
-                        : "bg-[#1C1C1E] text-white/40"
+                        ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                        : "bg-[hsl(var(--ios-secondary))] text-[hsl(var(--ios-text-secondary))]"
                     )}
                     onClick={handleSendMessage}
                     disabled={!inputMessage.trim() || isLoading}
