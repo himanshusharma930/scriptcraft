@@ -7,6 +7,7 @@ import { ArrowLeft, Send, Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { QuickActions } from "@/components/quick-actions"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { sendChatMessage } from "@/lib/ai-service"
 
 export default function AiAssistantPage() {
@@ -51,51 +52,54 @@ export default function AiAssistantPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/95">
-      {/* Main Container with Visual Separation */}
+    <div className="fixed inset-0 bg-[#000000] antialiased">
+      {/* iOS-style Container */}
       <div className="relative h-full max-w-2xl mx-auto bg-[#0A0A0A] 
                       shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
-        {/* Subtle Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent" />
+        {/* Subtle System Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-500/[0.03] to-transparent" />
 
-        {/* Content Container */}
+        {/* Main Content Container */}
         <div className="relative h-full flex flex-col">
-          {/* Enhanced Header */}
+          {/* iOS Header */}
           <div className="flex-none">
             <div className="sticky top-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-xl 
-                          border-b border-white/[0.08]">
-              <div className="flex items-center px-4 h-16">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="mr-3 text-white hover:bg-white/10 rounded-full 
-                            transition-colors duration-200"
-                  onClick={() => router.back()}
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                </Button>
-                
-                {/* Enhanced AI Assistant Identity */}
-                <div className="flex items-center gap-4">
-                  <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-blue-600 
-                                  rounded-full blur-md opacity-75 group-hover:opacity-100 
-                                  transition-opacity duration-200" />
-                    <div className="relative h-11 w-11 rounded-full bg-gradient-to-r 
-                                  from-blue-500 to-blue-600 p-[2px]">
-                      <div className="h-full w-full rounded-full bg-[#0A0A0A] 
-                                    flex items-center justify-center">
-                        <Sparkles className="h-6 w-6 text-white" />
+                          border-b border-white/[0.06]">
+              <div className="flex items-center justify-between px-4 h-[52px]">
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="w-9 h-9 rounded-full text-white/90 hover:text-white
+                              hover:bg-white/10 transition-colors duration-200"
+                    onClick={() => router.back()}
+                  >
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
+                  
+                  {/* Enhanced Assistant Identity */}
+                  <div className="flex items-center gap-3.5">
+                    <div className="relative">
+                      <div className="absolute -inset-0.5 bg-gradient-to-br 
+                                    from-blue-500 to-blue-600 rounded-full blur-md 
+                                    opacity-70" />
+                      <div className="relative h-10 w-10 rounded-full 
+                                    bg-gradient-to-br from-blue-500 to-blue-600 p-[1.5px]">
+                        <div className="h-full w-full rounded-full bg-[#0A0A0A] 
+                                      flex items-center justify-center">
+                          <Sparkles className="h-5 w-5 text-white" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <h1 className="text-lg font-semibold text-white tracking-tight">
-                      YouTube Assistant
-                    </h1>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                      <p className="text-sm text-gray-400">Online</p>
+                    <div>
+                      <h1 className="text-[17px] font-semibold text-white/90">
+                        YouTube Assistant
+                      </h1>
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-[6px] w-[6px] rounded-full bg-green-500 
+                                      animate-pulse" />
+                        <p className="text-[13px] text-white/50">AI Assistant</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -103,24 +107,23 @@ export default function AiAssistantPage() {
             </div>
           </div>
 
-          {/* Messages with Enhanced Scrolling */}
-          <div className="flex-1 overflow-y-auto pb-40 
-                         scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-            <div className="max-w-[85%] mx-auto py-4 space-y-4">
+          {/* Messages Area */}
+          <ScrollArea className="flex-1 px-4">
+            <div className="max-w-[85%] mx-auto py-4 space-y-3">
               {messages.map((msg, i) => (
                 <div
                   key={i}
                   className={cn(
-                    "flex animate-in fade-in slide-in-from-bottom-2",
+                    "flex animate-in fade-in slide-in-from-bottom-2 duration-200",
                     msg.role === 'user' ? 'justify-end' : 'justify-start'
                   )}
                 >
                   <div className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-3",
-                    "shadow-[0_2px_8px_rgba(0,0,0,0.2)]",
+                    "shadow-sm backdrop-blur-sm",
                     msg.role === 'user' 
                       ? "bg-blue-500 text-white" 
-                      : "bg-[#1C1C1E] text-white"
+                      : "bg-[#1C1C1E] text-white/90"
                   )}>
                     <p className="text-[15px] leading-relaxed">{msg.content}</p>
                   </div>
@@ -128,21 +131,22 @@ export default function AiAssistantPage() {
               ))}
               <div ref={messagesEndRef} />
             </div>
-          </div>
+          </ScrollArea>
 
           {/* Enhanced Input Area */}
           <div className="fixed bottom-8 left-0 right-0 max-w-2xl mx-auto">
-            {/* Quick Actions with Enhanced Gradient */}
-            <div className="bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/95 to-transparent pt-16">
+            {/* Quick Actions with iOS-style Gradient */}
+            <div className="bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/95 
+                          to-transparent pt-16">
               <QuickActions 
                 onSelect={(action) => setInputMessage(`Help me with ${action.toLowerCase()}`)}
               />
             </div>
 
-            {/* Enhanced Message Input */}
+            {/* iOS-style Input */}
             <div className="bg-[#0A0A0A]/95 backdrop-blur-xl px-4 py-4 
-                           border-t border-white/[0.08]">
-              <div className="max-w-[85%] mx-auto">
+                           border-t border-white/[0.06]">
+              <div className="max-w-[90%] mx-auto">
                 <div className="flex items-center gap-3">
                   <div className="flex-1 relative">
                     <Input
@@ -150,28 +154,29 @@ export default function AiAssistantPage() {
                       onChange={(e) => setInputMessage(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                       placeholder="Message YouTube Assistant..."
-                      className="h-[50px] pl-4 pr-12 rounded-2xl bg-[#1C1C1E] 
-                                border-white/[0.08] text-white placeholder:text-gray-500
-                                focus:ring-2 focus:ring-blue-500 
-                                shadow-[0_2px_8px_rgba(0,0,0,0.2)]
+                      className="h-[44px] pl-4 pr-4 rounded-2xl bg-[#1C1C1E] 
+                                border-white/[0.06] text-white/90 
+                                placeholder:text-white/40
+                                focus:ring-2 focus:ring-blue-500/50 
+                                shadow-[0_2px_8px_rgba(0,0,0,0.12)]
                                 transition-all duration-200"
                     />
                   </div>
                   <Button
                     size="icon"
                     className={cn(
-                      "h-[50px] w-[50px] rounded-full transition-all duration-200",
-                      "shadow-[0_2px_8px_rgba(0,0,0,0.2)]",
+                      "h-[44px] w-[44px] rounded-full transition-all duration-200",
+                      "shadow-[0_2px_8px_rgba(0,0,0,0.12)]",
                       inputMessage.trim()
-                        ? "bg-blue-500 hover:bg-blue-600"
-                        : "bg-[#1C1C1E] text-gray-500"
+                        ? "bg-blue-500 hover:bg-blue-600 text-white"
+                        : "bg-[#1C1C1E] text-white/40"
                     )}
                     onClick={handleSendMessage}
                     disabled={!inputMessage.trim() || isLoading}
                   >
                     {isLoading ? (
-                      <div className="h-5 w-5 border-2 border-current border-t-transparent 
-                                    rounded-full animate-spin" />
+                      <div className="h-5 w-5 border-2 border-current 
+                                    border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <Send className="h-5 w-5" />
                     )}
