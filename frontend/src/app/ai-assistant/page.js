@@ -3,14 +3,16 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Mic, Send, Sparkles, ArrowLeft, Image, Link, Video } from "lucide-react"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Mic, Send, Sparkles, ArrowLeft } from "lucide-react"
 import { MessageBubble } from "@/components/message-bubble"
+import { QuickActions } from "@/components/quick-actions"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 const INITIAL_MESSAGE = {
   type: 'assistant',
-  content: "Hello! I'm your YouTube content assistant. How can I help you create amazing videos today?",
+  content: "Hi! I'm your YouTube content assistant. How can I help you create amazing videos today?",
   showSuggestions: true
 }
 
@@ -35,13 +37,13 @@ export default function AiAssistantPage() {
     setMessages(prev => [...prev, { type: 'user', content: message }])
     setMessage("")
     
+    // Simulate AI response
     setMessages(prev => [...prev, {
       type: 'assistant',
       content: "",
       isLoading: true
     }])
 
-    // Simulate AI response
     setTimeout(() => {
       setMessages(prev => [
         ...prev.slice(0, -1),
@@ -54,13 +56,17 @@ export default function AiAssistantPage() {
     }, 1500)
   }
 
+  const handleQuickAction = (action) => {
+    setMessage(`Help me with ${action.toLowerCase()}`)
+  }
+
   return (
     <div className="fixed inset-0 bg-brand-light-bg dark:bg-brand-dark-bg">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-brand-light-bg/90 dark:bg-brand-dark-bg/90 
                       backdrop-blur-xl border-b 
                       border-brand-light-border dark:border-brand-dark-border">
-        <div className="flex items-center px-4 h-14 pt-2">
+        <div className="flex items-center px-4 h-14">
           <Button
             variant="ghost"
             size="icon"
@@ -89,21 +95,15 @@ export default function AiAssistantPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="px-4 py-2">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
-            <QuickAction icon={<Image />} label="Thumbnail" />
-            <QuickAction icon={<Video />} label="Script" />
-            <QuickAction icon={<Link />} label="Research" />
-          </div>
-        </div>
+        <QuickActions onActionSelect={handleQuickAction} />
       </div>
 
       {/* Messages */}
-      <div 
+      <ScrollArea 
         ref={scrollRef}
-        className="h-[calc(100vh-180px)] overflow-y-auto px-4 py-4"
+        className="h-[calc(100vh-130px)]"
       >
-        <div className="space-y-4 max-w-md mx-auto">
+        <div className="px-4 py-4 space-y-4">
           {messages.map((msg, i) => (
             <MessageBubble 
               key={i}
@@ -112,19 +112,19 @@ export default function AiAssistantPage() {
             />
           ))}
         </div>
-      </div>
+      </ScrollArea>
 
       {/* Input Area */}
       <div className="fixed bottom-0 left-0 right-0 bg-brand-light-bg/90 
                       dark:bg-brand-dark-bg/90 backdrop-blur-xl border-t 
                       border-brand-light-border dark:border-brand-dark-border">
-        <div className="max-w-md mx-auto px-4 py-4">
+        <div className="px-4 py-4">
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "h-10 w-10 rounded-full shrink-0",
+                "h-10 w-10 rounded-full",
                 "text-brand-gray-300 dark:text-brand-gray-dark",
                 "hover:bg-brand-gray-100 dark:hover:bg-brand-dark-secondary",
                 isRecording && "text-brand-blue-start dark:text-brand-blue-dark"
@@ -152,7 +152,7 @@ export default function AiAssistantPage() {
               onClick={handleSend}
               disabled={!message.trim()}
               className={cn(
-                "h-10 w-10 rounded-full shrink-0",
+                "h-10 w-10 rounded-full",
                 "bg-brand-blue-start dark:bg-brand-blue-dark",
                 "hover:bg-brand-blue-start/90 dark:hover:bg-brand-blue-dark/90",
                 "disabled:opacity-50",
@@ -165,22 +165,5 @@ export default function AiAssistantPage() {
         </div>
       </div>
     </div>
-  )
-}
-
-function QuickAction({ icon, label }) {
-  return (
-    <Button
-      variant="ghost"
-      className={cn(
-        "h-9 px-4 rounded-full shrink-0",
-        "text-brand-gray-300 dark:text-brand-gray-dark",
-        "hover:bg-brand-gray-100 dark:hover:bg-brand-dark-secondary",
-        "transition-all duration-200"
-      )}
-    >
-      {icon}
-      <span className="ml-2 text-sm">{label}</span>
-    </Button>
   )
 }
