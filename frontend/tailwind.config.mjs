@@ -81,11 +81,18 @@ export default {
   				to: {
   					height: '0'
   				}
-  			}
+  			},
+        "ios-spring": {
+          "0%": { transform: "scale(0.96)" },
+          "40%": { transform: "scale(1.02)" },
+          "70%": { transform: "scale(0.98)" },
+          "100%": { transform: "scale(1)" },
+        },
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
+  			'accordion-up': 'accordion-up 0.2s ease-out',
+        "ios-spring": "ios-spring 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
   		},
       transitionTimingFunction: {
         'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
