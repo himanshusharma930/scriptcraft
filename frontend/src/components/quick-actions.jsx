@@ -2,59 +2,56 @@
 
 import { Button } from "@/components/ui/button"
 import { 
+  Lightbulb, 
   Video, 
-  Image, 
   FileText, 
   Sparkles, 
-  Lightbulb, 
+  Palette, 
+  BarChart, 
+  Hash, 
   Wand2,
   MessageCircle,
-  Palette
+  Target
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const QUICK_ACTIONS = [
-  { icon: Lightbulb, label: "Content Ideas" },
-  { icon: Video, label: "Script Writing" },
-  { icon: Image, label: "Thumbnail" },
-  { icon: MessageCircle, label: "Hook Writing" },
-  { icon: FileText, label: "Description" },
-  { icon: Palette, label: "Branding" },
-  { icon: Wand2, label: "SEO Tips" },
-  { icon: Sparkles, label: "Engagement" }
+  { icon: Lightbulb, label: "Content Ideas", color: "from-yellow-500 to-orange-500" },
+  { icon: Video, label: "Script Writing", color: "from-blue-500 to-indigo-500" },
+  { icon: MessageCircle, label: "Hook Writing", color: "from-green-500 to-emerald-500" },
+  { icon: Palette, label: "Thumbnail Ideas", color: "from-purple-500 to-pink-500" },
+  { icon: Hash, label: "Tags & SEO", color: "from-red-500 to-rose-500" },
+  { icon: BarChart, label: "Analytics Tips", color: "from-cyan-500 to-blue-500" },
+  { icon: Target, label: "Audience Growth", color: "from-violet-500 to-purple-500" },
+  { icon: Wand2, label: "Optimization", color: "from-amber-500 to-yellow-500" }
 ]
 
 export function QuickActions({ onActionSelect }) {
   return (
     <div className="relative">
-      {/* Gradient Fade Edges */}
+      {/* Gradient Fades */}
       <div className="absolute left-0 top-0 bottom-0 w-8 
-                      bg-gradient-to-r from-brand-light-bg to-transparent 
-                      dark:from-brand-dark-bg z-10" />
+                      bg-gradient-to-r from-black to-transparent z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-8 
-                      bg-gradient-to-l from-brand-light-bg to-transparent 
-                      dark:from-brand-dark-bg z-10" />
+                      bg-gradient-to-l from-black to-transparent z-10" />
       
-      <div className="overflow-x-auto no-scrollbar">
-        <div className="flex gap-2 px-4 py-2 min-w-min">
+      {/* Scrolling Container */}
+      <div className="overflow-x-auto hide-scrollbar">
+        <div className="flex gap-2 px-4 py-3">
           {QUICK_ACTIONS.map((action) => (
             <Button
               key={action.label}
-              variant="ghost"
               onClick={() => onActionSelect(action.label)}
               className={cn(
                 "flex-none h-10 px-4 rounded-full",
-                "bg-white dark:bg-brand-dark-secondary",
-                "border border-brand-light-border dark:border-brand-dark-border",
-                "hover:bg-brand-gray-100 dark:hover:bg-brand-dark-secondary/80",
-                "active:scale-95",
-                "transition-all duration-200"
+                "bg-gradient-to-r border-0",
+                "hover:opacity-90 active:scale-95",
+                "transition-all duration-200",
+                action.color
               )}
             >
-              <action.icon className="h-4 w-4 mr-2 
-                                    text-brand-blue-start dark:text-brand-blue-dark" />
-              <span className="text-sm font-medium whitespace-nowrap
-                             text-brand-light-text-primary dark:text-brand-dark-text-primary">
+              <action.icon className="h-4 w-4 mr-2 text-white" />
+              <span className="text-sm font-medium text-white whitespace-nowrap">
                 {action.label}
               </span>
             </Button>
