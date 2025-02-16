@@ -4,8 +4,9 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, Settings, Home as HomeIcon, FileText, Globe, User, Plus } from "lucide-react"
+import { Search, Filter, Settings, Home, Globe, User, Plus, FileText } from "lucide-react"
 import { CreateProjectSheet } from "@/components/create-project-sheet"
+import { CreateButton } from "@/components/create-button"
 import { useState } from "react"
 
 function ProjectCard({ status, title, description, date }) {
@@ -38,7 +39,7 @@ function NavButton({ icon, label, active }) {
   )
 }
 
-export default function Home() {
+export default function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
 
   return (
@@ -105,26 +106,26 @@ export default function Home() {
         />
       </div>
 
+      {/* Backdrop blur when sheet is open */}
+      {createOpen && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" />
+      )}
+
       <CreateProjectSheet 
         open={createOpen}
         onOpenChange={setCreateOpen}
       />
 
       {/* Updated Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
+      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t">
         <div className="relative flex justify-around items-center py-2 max-w-md mx-auto">
           {/* Left Nav Items */}
-          <NavButton icon={<HomeIcon className="h-6 w-6" />} label="Projects" active />
+          <NavButton icon={<Home className="h-6 w-6" />} label="Projects" active />
           <NavButton icon={<Globe className="h-6 w-6" />} label="Research" />
           
           {/* Center Create Button */}
           <div className="relative -top-6">
-            <Button
-              onClick={() => setCreateOpen(true)}
-              className="h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 transition-transform hover:scale-105"
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
+            <CreateButton onClick={() => setCreateOpen(true)} />
           </div>
 
           {/* Right Nav Items */}

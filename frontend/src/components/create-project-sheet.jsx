@@ -12,7 +12,21 @@ export function CreateProjectSheet({ open, onOpenChange }) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="h-[90vh] rounded-t-[10px] px-6">
+      <SheetContent 
+        side="bottom" 
+        className={`
+          h-[90vh] rounded-t-[10px] px-6
+          transition-transform duration-300 ease-spring
+          data-[state=open]:animate-in
+          data-[state=closed]:animate-out
+          data-[state=closed]:fade-out-0
+          data-[state=open]:fade-in-0
+          data-[state=closed]:zoom-out-95
+          data-[state=open]:zoom-in-95
+          data-[state=closed]:slide-out-to-bottom
+          data-[state=open]:slide-in-from-bottom
+        `}
+      >
         <SheetHeader className="mb-6">
           <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
           <SheetTitle className="text-xl font-semibold text-center">Create New Project</SheetTitle>
