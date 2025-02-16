@@ -88,11 +88,16 @@ export default {
           "70%": { transform: "scale(0.98)" },
           "100%": { transform: "scale(1)" },
         },
+        "sheet-up": {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateY(0)" }
+        },
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
         "ios-spring": "ios-spring 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
+        "sheet-up": "sheet-up 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
   		},
       transitionTimingFunction: {
         'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
