@@ -10,14 +10,12 @@ import { CreateButton } from "@/components/create-button"
 import { CreateProjectSheet } from "@/components/create-project-sheet"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ProjectCard } from "@/components/project-card"
-import { AiAssistantSheet } from "@/components/ai-assistant-sheet"
 import { BottomNavigation } from "@/components/bottom-navigation"
 import { StatusBar } from "@/components/status-bar"
 import { cn } from "@/lib/utils"
 
 function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
-  const [aiOpen, setAiOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState("All")
 
   return (
@@ -128,17 +126,11 @@ function HomePage() {
 
         <BottomNavigation 
           onCreateClick={() => setCreateOpen(true)}
-          onAiClick={() => setAiOpen(true)}
         />
 
         <CreateProjectSheet 
           open={createOpen} 
           onOpenChange={setCreateOpen}
-        />
-
-        <AiAssistantSheet
-          open={aiOpen}
-          onOpenChange={setAiOpen}
         />
       </div>
     </>
