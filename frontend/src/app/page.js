@@ -9,44 +9,43 @@ import { Search, Filter, Settings, Home, FileText, Globe, User, Plus } from "luc
 import { CreateProjectSheet } from "@/components/create-project-sheet"
 import { CreateButton } from "@/components/create-button"
 
-const SPACING = {
-  container: "px-4 pb-[88px] pt-12", // Account for status bar
-  header: "mb-8",
-  search: "mb-6",
-  filters: "mb-8",
-  stats: "mb-8",
-  projects: "space-y-4",
-  tabBar: "h-[83px] pt-2 pb-7" // iOS standard
-}
-
 export default function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState("All")
 
   return (
-    <div className="container max-w-md mx-auto px-4 pb-[88px] pt-12 bg-brand-gray-50">
+    <div className="container max-w-md mx-auto px-4 pb-[88px] pt-12 
+                    bg-brand-light-bg dark:bg-brand-dark-bg
+                    transition-colors duration-200">
       {/* Header */}
-      <div className={`flex justify-between items-center ${SPACING.header}`}>
-        <h1 className="text-[34px] font-semibold text-[#1C1C1E] leading-tight">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-[34px] font-semibold 
+                       text-[#1C1C1E] dark:text-white">
           My Projects
         </h1>
         <Button 
           variant="ghost" 
           size="icon"
-          className="w-11 h-11 rounded-full hover:bg-black/5"
+          className="w-11 h-11 rounded-full 
+                     hover:bg-black/5 dark:hover:bg-white/5"
         >
-          <Settings className="h-6 w-6 text-[#007AFF]" />
+          <Settings className="h-6 w-6 text-brand-blue-start" />
         </Button>
       </div>
 
       {/* Search */}
-      <div className={`relative ${SPACING.search}`}>
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8E8E93]" />
+      <div className="relative mb-6">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 
+                          text-brand-gray-300 dark:text-brand-gray-dark" />
         <Input 
           placeholder="Search projects"
-          className="h-[46px] pl-12 pr-12 bg-white border-0 rounded-2xl
-                   shadow-sm placeholder:text-[#8E8E93]
-                   focus-visible:ring-2 focus-visible:ring-[#007AFF]"
+          className="h-[46px] pl-12 pr-12 
+                     bg-white dark:bg-brand-dark-secondary
+                     border-0 rounded-2xl
+                     shadow-sm dark:shadow-none
+                     placeholder:text-brand-gray-300 
+                     dark:placeholder:text-brand-gray-dark
+                     dark:text-white"
         />
         <Button 
           variant="ghost" 
@@ -58,7 +57,7 @@ export default function HomePage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className={`bg-[#E5E5EA] p-1.5 rounded-lg ${SPACING.filters}`}>
+      <div className={`bg-[#E5E5EA] p-1.5 rounded-lg mb-8`}>
         {["All", "Draft", "In-Progress", "Completed"].map((filter) => (
           <Button
             key={filter}
@@ -78,11 +77,11 @@ export default function HomePage() {
       </div>
 
       {/* Stats Card */}
-      <Card className="mb-8 border-0 overflow-hidden rounded-[28px]">
+      <Card className="mb-8 border-0 overflow-hidden rounded-[28px]
+                      dark:bg-brand-dark-card">
         <div className="relative">
-          {/* Exact Gradient from Reference */}
-          <div className="absolute inset-0 bg-stats-gradient" />
-          
+          <div className="absolute inset-0 bg-stats-gradient 
+                         dark:bg-stats-gradient-dark" />
           <div className="relative px-8 py-6 grid grid-cols-3 gap-6">
             <StatItem number="2" label="Total Projects" />
             <StatItem number="1" label="In Progress" />
@@ -110,8 +109,11 @@ export default function HomePage() {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-tab-blur backdrop-blur-xl border-t border-brand-gray-100">
-        <div className={`flex justify-around items-center ${SPACING.tabBar} max-w-md mx-auto`}>
+      <div className="fixed bottom-0 left-0 right-0 
+                      bg-brand-light-bg/90 dark:bg-brand-dark-bg/90 
+                      backdrop-blur-xl border-t 
+                      border-brand-light-border dark:border-brand-dark-border">
+        <div className={`flex justify-around items-center h-[83px] pt-2 pb-7 max-w-md mx-auto`}>
           <TabBarItem icon={<Home className="h-6 w-6" />} label="Projects" active />
           <TabBarItem icon={<Globe className="h-6 w-6" />} label="Research" />
           <div className="-mt-8">
@@ -129,7 +131,7 @@ export default function HomePage() {
 
 function ProjectCard({ status, title, description, date, progress }) {
   return (
-    <Card className="p-5 bg-white rounded-2xl border-0 shadow-sm hover:shadow-md transition-all">
+    <Card className="p-5 bg-white dark:bg-brand-dark-secondary rounded-2xl border-0 shadow-sm hover:shadow-md transition-all">
       <div className="flex justify-between items-start mb-3">
         <Badge 
           variant={status === "In-Progress" ? "default" : "secondary"}
@@ -143,11 +145,11 @@ function ProjectCard({ status, title, description, date, progress }) {
         >
           {status}
         </Badge>
-        <span className="text-sm text-[#8E8E93]">{date}</span>
+        <span className="text-sm text-[#8E8E93] dark:text-brand-gray-dark">{date}</span>
       </div>
-      <h3 className="text-lg font-semibold text-[#1C1C1E] mb-1">{title}</h3>
-      <p className="text-sm text-[#8E8E93] mb-4">{description}</p>
-      <div className="w-full h-2 bg-[#E5E5EA] rounded-full overflow-hidden">
+      <h3 className="text-lg font-semibold text-[#1C1C1E] dark:text-white mb-1">{title}</h3>
+      <p className="text-sm text-[#8E8E93] dark:text-brand-gray-dark mb-4">{description}</p>
+      <div className="w-full h-2 bg-[#E5E5EA] dark:bg-brand-dark-border rounded-full overflow-hidden">
         <div 
           className="h-full bg-[#34C759] transition-all duration-300"
           style={{ width: `${progress}%` }}
@@ -160,10 +162,10 @@ function ProjectCard({ status, title, description, date, progress }) {
 function TabBarItem({ icon, label, active }) {
   return (
     <button className="flex flex-col items-center">
-      <div className={`mb-1 ${active ? 'text-[#007AFF]' : 'text-[#8E8E93]'}`}>
+      <div className={`mb-1 ${active ? 'text-[#007AFF]' : 'text-[#8E8E93] dark:text-brand-gray-dark'}`}>
         {icon}
       </div>
-      <span className={`text-[10px] ${active ? 'text-[#007AFF]' : 'text-[#8E8E93]'}`}>
+      <span className={`text-[10px] ${active ? 'text-[#007AFF]' : 'text-[#8E8E93] dark:text-brand-gray-dark'}`}>
         {label}
       </span>
     </button>
