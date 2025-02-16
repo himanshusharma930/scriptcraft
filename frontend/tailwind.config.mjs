@@ -124,6 +124,18 @@ module.exports = {
           '0%': { transform: 'translateY(100%)' },
           '100%': { transform: 'translateY(0)' },
         },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" }
+        },
+        "slide-in-from-bottom": {
+          "0%": { transform: "translateY(20px)" },
+          "100%": { transform: "translateY(0)" }
+        },
+        "pulse": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" }
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -131,6 +143,9 @@ module.exports = {
         "ios-spring": "ios-spring 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
         "sheet-up": "sheet-up 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
         'slide-up': 'slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
+        "fade-in": "fade-in 0.3s ease-out",
+        "slide-in": "slide-in-from-bottom 0.3s ease-out",
+        "pulse": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite"
       },
       transitionTimingFunction: {
         'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',

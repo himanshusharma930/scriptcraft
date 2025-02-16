@@ -1,27 +1,24 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { motion, AnimatePresence } from "framer-motion"
 
 export function MessageBubble({ message, isStreaming }) {
   const isAssistant = message.role === 'assistant'
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+    <div
       className={cn(
-        "flex",
+        "flex animate-in fade-in slide-in-from-bottom-5 duration-300",
         isAssistant ? 'justify-start' : 'justify-end'
       )}
     >
       <div className={cn(
         "max-w-[85%] rounded-2xl px-4 py-3",
         "transition-all duration-200",
-        "shadow-ios",
         isAssistant 
           ? "bg-brand-gray-100 dark:bg-brand-dark-secondary" 
-          : "bg-brand-blue-start dark:bg-brand-blue-dark"
+          : "bg-brand-blue-start dark:bg-brand-blue-dark",
+        "shadow-ios hover:shadow-ios-md"
       )}>
         <p className={cn(
           "text-[15px] leading-relaxed",
@@ -31,16 +28,10 @@ export function MessageBubble({ message, isStreaming }) {
         )}>
           {message.content}
           {isStreaming && (
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ repeat: Infinity, duration: 1 }}
-            >
-              ▋
-            </motion.span>
+            <span className="inline-block animate-pulse">▋</span>
           )}
         </p>
       </div>
-    </motion.div>
+    </div>
   )
 }

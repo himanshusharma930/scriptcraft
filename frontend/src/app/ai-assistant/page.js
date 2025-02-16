@@ -130,6 +130,7 @@ export default function AiAssistantPage() {
             <MessageBubble 
               key={i}
               message={msg}
+              isStreaming={msg.isStreaming}
               onSuggestionSelect={(suggestion) => setMessage(suggestion)}
             />
           ))}
