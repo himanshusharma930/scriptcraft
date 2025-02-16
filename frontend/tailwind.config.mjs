@@ -9,30 +9,49 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        border: "hsl(var(--border))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
         brand: {
           blue: {
             start: '#0066FF',
             mid: '#0088FF',
-            end: '#0099FF'
+            end: '#0099FF',
+            dark: '#0A84FF'
           },
           dark: {
             bg: '#000000',
             card: '#1C1C1E',
             secondary: '#2C2C2E',
-            border: '#38383A'
+            border: '#38383A',
+            text: {
+              primary: '#FFFFFF',
+              secondary: '#98989D'
+            }
           },
           light: {
             bg: '#F2F2F7',
             card: '#FFFFFF',
-            border: '#E5E5EA'
+            border: '#E5E5EA',
+            text: {
+              primary: '#000000',
+              secondary: '#8E8E93'
+            }
           },
           gray: {
-            50: '#F2F2F7',
             100: '#E5E5EA',
             300: '#8E8E93',
             dark: '#98989D'
           },
-          success: '#4CD964'
+          success: {
+            light: '#34C759',
+            dark: '#30D158'
+          }
         },
         ios: {
           blue: {
@@ -45,6 +64,9 @@ module.exports = {
             end: '#636366'
           }
         }
+      },
+      borderColor: {
+        DEFAULT: "hsl(var(--border))"
       },
       backgroundImage: {
         'stats-gradient': 'linear-gradient(90deg, #0066FF 0%, #0088FF 50%, #0099FF 100%)',

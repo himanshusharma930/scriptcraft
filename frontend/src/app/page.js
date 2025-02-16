@@ -1,15 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, Settings, Home, FileText, Globe, User, Plus } from "lucide-react"
-import { CreateProjectSheet } from "@/components/create-project-sheet"
+import { Search, Filter, Settings, Home, FileText, Globe, User } from "lucide-react"
 import { CreateButton } from "@/components/create-button"
+import { CreateProjectSheet } from "@/components/create-project-sheet"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { ProjectCard } from "@/components/project-card"
 
-export default function HomePage() {
+function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState("All")
 
@@ -23,14 +25,17 @@ export default function HomePage() {
                        text-[#1C1C1E] dark:text-white">
           My Projects
         </h1>
-        <Button 
-          variant="ghost" 
-          size="icon"
-          className="w-11 h-11 rounded-full 
-                     hover:bg-black/5 dark:hover:bg-white/5"
-        >
-          <Settings className="h-6 w-6 text-brand-blue-start" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="w-10 h-10 rounded-full 
+                       hover:bg-black/5 dark:hover:bg-white/5"
+          >
+            <Settings className="h-6 w-6 text-brand-blue-start" />
+          </Button>
+        </div>
       </div>
 
       {/* Search */}
@@ -129,36 +134,6 @@ export default function HomePage() {
   )
 }
 
-function ProjectCard({ status, title, description, date, progress }) {
-  return (
-    <Card className="p-5 bg-white dark:bg-brand-dark-secondary rounded-2xl border-0 shadow-sm hover:shadow-md transition-all">
-      <div className="flex justify-between items-start mb-3">
-        <Badge 
-          variant={status === "In-Progress" ? "default" : "secondary"}
-          className={`
-            rounded-full px-4 py-1 text-xs font-medium
-            ${status === "In-Progress" 
-              ? 'bg-[#007AFF] hover:bg-[#007AFF]/90' 
-              : 'bg-[#E5E5EA] text-[#8E8E93]'
-            }
-          `}
-        >
-          {status}
-        </Badge>
-        <span className="text-sm text-[#8E8E93] dark:text-brand-gray-dark">{date}</span>
-      </div>
-      <h3 className="text-lg font-semibold text-[#1C1C1E] dark:text-white mb-1">{title}</h3>
-      <p className="text-sm text-[#8E8E93] dark:text-brand-gray-dark mb-4">{description}</p>
-      <div className="w-full h-2 bg-[#E5E5EA] dark:bg-brand-dark-border rounded-full overflow-hidden">
-        <div 
-          className="h-full bg-[#34C759] transition-all duration-300"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-    </Card>
-  )
-}
-
 function TabBarItem({ icon, label, active }) {
   return (
     <button className="flex flex-col items-center">
@@ -182,3 +157,5 @@ function StatItem({ number, label }) {
     </div>
   )
 }
+
+export default HomePage
