@@ -1,6 +1,10 @@
 "use client"
 
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { 
+  Sheet, 
+  SheetContent,
+  SheetTitle 
+} from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -34,12 +38,9 @@ export function CreateProjectSheet({ open, onOpenChange }) {
       <SheetContent 
         side="bottom" 
         className={cn(
-          // Base styles
-          `px-0 pt-0 pb-8 h-[85vh] rounded-t-[10px] border-t-0
-           bg-[#F2F2F7] overflow-hidden`,
-          // Animation
-          `motion-safe:animate-sheet-up`,
-          // Transform based on drag
+          "px-0 pt-0 pb-8 h-[85vh] rounded-t-[10px] border-t-0",
+          "bg-[#F2F2F7] overflow-hidden",
+          "motion-safe:animate-sheet-up",
           isDragging && 'transition-none',
           'transform-gpu'
         )}
@@ -48,6 +49,11 @@ export function CreateProjectSheet({ open, onOpenChange }) {
           opacity: isDragging ? Math.max(1 - dragProgress / 400, 0.5) : 1
         }}
       >
+        {/* Required SheetTitle for accessibility */}
+        <SheetTitle className="sr-only">
+          Create New Project
+        </SheetTitle>
+
         {/* Drag Handle Area */}
         <div 
           className={cn(
@@ -77,7 +83,7 @@ export function CreateProjectSheet({ open, onOpenChange }) {
           }}
         >
           <div className="space-y-6 pb-8">
-            {/* Title */}
+            {/* Visual Title (separate from SheetTitle) */}
             <div className="text-center mb-6">
               <h2 className="text-[22px] font-semibold text-[#1C1C1E]">
                 Create New Project
