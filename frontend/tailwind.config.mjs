@@ -78,7 +78,14 @@ module.exports = {
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
+        sm: 'calc(var(--radius) - 4px)',
+        'ios': '10px',
+        'ios-xl': '20px',
+      },
+      boxShadow: {
+        'ios': '0 2px 8px rgba(0, 0, 0, 0.04)',
+        'ios-md': '0 4px 12px rgba(0, 0, 0, 0.06)',
+        'ios-lg': '0 8px 24px rgba(0, 0, 0, 0.08)',
       },
       keyframes: {
         'accordion-down': {
@@ -113,12 +120,17 @@ module.exports = {
             opacity: 1
           }
         },
+        'slide-up': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         "ios-spring": "ios-spring 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
         "sheet-up": "sheet-up 0.4s cubic-bezier(0.32, 0.72, 0, 1)",
+        'slide-up': 'slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
       },
       transitionTimingFunction: {
         'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
