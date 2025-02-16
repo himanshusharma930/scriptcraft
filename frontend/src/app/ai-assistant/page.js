@@ -9,8 +9,9 @@ import { MessageBubble } from "@/components/message-bubble"
 import { QuickActions } from "@/components/quick-actions"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { generateChatCompletion } from "@/lib/ai-service"
+import { aiService } from "@/lib/ai-service"
 import { useToast } from "@/hooks/use-toast"
+import { useAIContext } from "@/components/ai-context-provider"
 
 export default function AiAssistantPage() {
   const router = useRouter()
@@ -20,6 +21,7 @@ export default function AiAssistantPage() {
   const [isTyping, setIsTyping] = useState(false)
   const scrollRef = useRef(null)
   const { toast } = useToast()
+  const { context, setContext } = useAIContext()
 
   // Auto scroll
   useEffect(() => {
@@ -39,12 +41,8 @@ export default function AiAssistantPage() {
     setIsTyping(true)
 
     try {
-      const response = await generateChatCompletion([
-        { role: 'system', content: 'You are a helpful YouTube content creation assistant.' },
-        ...messages,
-        userMessage
-      ])
-
+      const response = await aiService.generateResponse(message, context)
+      
       // Handle streaming response
       let assistantMessage = ""
       for await (const chunk of response) {
@@ -65,7 +63,8 @@ export default function AiAssistantPage() {
         {
           role: 'assistant',
           content: assistantMessage,
-          isStreaming: false
+          isStreaming: false,
+          context: { ...context } // Store context with message
         }
       ])
     } catch (error) {
