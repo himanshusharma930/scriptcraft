@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { ProjectCard } from "@/components/project-card"
 import { BottomNavigation } from "@/components/bottom-navigation"
 import { cn } from "@/lib/utils"
+import { FilterPopover } from "@/components/filter-popover"
 
 function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
@@ -42,51 +43,27 @@ function HomePage() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-6 group">
+      {/* Search with Filter */}
+      <div className="relative mb-6">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 
-                          text-brand-gray-300 dark:text-brand-gray-dark
-                          transition-colors duration-200" />
+                          text-brand-gray-300 dark:text-brand-gray-dark" />
         <Input 
           placeholder="Search projects"
           className={cn(
             "h-[46px] pl-12 pr-12",
             "bg-white dark:bg-brand-dark-secondary",
             "border-0 rounded-2xl",
-            "shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none",
+            "shadow-sm dark:shadow-none",
             "placeholder:text-brand-gray-300 dark:placeholder:text-brand-gray-dark",
-            "focus-visible:ring-2 focus-visible:ring-brand-blue-start dark:focus-visible:ring-brand-blue-dark",
-            "transition-all duration-200"
+            "focus-visible:ring-2 focus-visible:ring-brand-blue-start dark:focus-visible:ring-brand-blue-dark"
           )}
         />
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full
-                     hover:bg-black/5 dark:hover:bg-white/5"
-        >
-          <Filter className="h-5 w-5 text-brand-blue-start dark:text-brand-blue-dark" />
-        </Button>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className={`bg-[#E5E5EA] p-1.5 rounded-lg mb-8`}>
-        {["All", "Draft", "In-Progress", "Completed"].map((filter) => (
-          <Button
-            key={filter}
-            variant="ghost"
-            onClick={() => setActiveFilter(filter)}
-            className={`
-              flex-1 h-[32px] rounded-md text-[15px] font-medium
-              ${activeFilter === filter 
-                ? 'bg-white text-[#1C1C1E] shadow-sm' 
-                : 'text-[#8E8E93] hover:text-[#1C1C1E]'
-              }
-            `}
-          >
-            {filter}
-          </Button>
-        ))}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+          <FilterPopover 
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+          />
+        </div>
       </div>
 
       {/* Stats Card */}
@@ -103,22 +80,18 @@ function HomePage() {
         </div>
       </Card>
 
-      {/* Project Cards */}
+      {/* Project Cards - Now filtered */}
       <div className="space-y-4">
-        <ProjectCard 
-          status="In-Progress"
-          title="How AI is Changing Content Creation"
-          description="An in-depth look at AI tools for content creators"
-          date="2024-02-20"
-          progress={65}
-        />
-        <ProjectCard 
-          status="Draft"
-          title="Top 10 Programming Languages 2024"
-          description="Comprehensive guide to trending programming languages"
-          date="2024-02-19"
-          progress={30}
-        />
+        {projects
+          .filter(project => 
+            activeFilter === "All" ? true : project.status === activeFilter
+          )
+          .map(project => (
+            <ProjectCard 
+              key={project.id}
+              {...project}
+            />
+          ))}
       </div>
 
       <BottomNavigation 
@@ -143,5 +116,25 @@ function StatItem({ number, label }) {
     </div>
   )
 }
+
+// Example projects data
+const projects = [
+  {
+    id: 1,
+    status: "In-Progress",
+    title: "How AI is Changing Content Creation",
+    description: "An in-depth look at AI tools for content creators",
+    date: "2024-02-20",
+    progress: 65
+  },
+  {
+    id: 2,
+    status: "Draft",
+    title: "Top 10 Programming Languages 2024",
+    description: "Comprehensive guide to trending programming languages",
+    date: "2024-02-19",
+    progress: 30
+  }
+]
 
 export default HomePage
