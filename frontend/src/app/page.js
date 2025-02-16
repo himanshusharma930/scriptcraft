@@ -4,10 +4,39 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, Settings, Home as HomeIcon, FileText, Globe, User } from "lucide-react"
-import Link from "next/link"
+import { Search, Filter, Settings, Home as HomeIcon, FileText, Globe, User, Plus } from "lucide-react"
 import { CreateProjectSheet } from "@/components/create-project-sheet"
 import { useState } from "react"
+
+function ProjectCard({ status, title, description, date }) {
+  return (
+    <Card className="p-4">
+      <div className="flex justify-between items-start mb-2">
+        <Badge variant={status === "In-Progress" ? "default" : "secondary"}>
+          {status}
+        </Badge>
+        <span className="text-sm text-gray-500">{date}</span>
+      </div>
+      <h3 className="text-lg font-semibold mb-1">{title}</h3>
+      <p className="text-gray-600 text-sm">{description}</p>
+      <div className="w-full h-2 bg-gray-100 rounded-full mt-4">
+        <div className="w-1/3 h-full bg-green-500 rounded-full"></div>
+      </div>
+    </Card>
+  )
+}
+
+function NavButton({ icon, label, active }) {
+  return (
+    <button 
+      className={`flex flex-col items-center px-4 py-1 transition-colors
+        ${active ? 'text-primary' : 'text-gray-500'}`}
+    >
+      {icon}
+      <span className="text-xs mt-1">{label}</span>
+    </button>
+  )
+}
 
 export default function Home() {
   const [createOpen, setCreateOpen] = useState(false)
@@ -76,56 +105,33 @@ export default function Home() {
         />
       </div>
 
-      {/* Floating Action Button */}
-      <Button 
-        className="fixed bottom-20 right-4 h-14 w-14 rounded-full shadow-lg"
-        onClick={() => setCreateOpen(true)}
-      >
-        <span className="text-2xl">+</span>
-      </Button>
-
-      {/* Add Create Project Sheet */}
       <CreateProjectSheet 
         open={createOpen}
         onOpenChange={setCreateOpen}
       />
 
-      {/* Bottom Navigation */}
+      {/* Updated Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
-        <div className="flex justify-around py-2 max-w-md mx-auto">
-          <NavButton icon={<HomeIcon />} label="Projects" active />
-          <NavButton icon={<Globe />} label="Research" />
-          <NavButton icon={<FileText />} label="Publishing" />
-          <NavButton icon={<User />} label="Profile" />
+        <div className="relative flex justify-around items-center py-2 max-w-md mx-auto">
+          {/* Left Nav Items */}
+          <NavButton icon={<HomeIcon className="h-6 w-6" />} label="Projects" active />
+          <NavButton icon={<Globe className="h-6 w-6" />} label="Research" />
+          
+          {/* Center Create Button */}
+          <div className="relative -top-6">
+            <Button
+              onClick={() => setCreateOpen(true)}
+              className="h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 transition-transform hover:scale-105"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </div>
+
+          {/* Right Nav Items */}
+          <NavButton icon={<FileText className="h-6 w-6" />} label="Publishing" />
+          <NavButton icon={<User className="h-6 w-6" />} label="Profile" />
         </div>
       </div>
     </div>
-  )
-}
-
-function ProjectCard({ status, title, description, date }) {
-  return (
-    <Card className="p-4">
-      <div className="flex justify-between items-start mb-2">
-        <Badge variant={status === "In-Progress" ? "default" : "secondary"}>
-          {status}
-        </Badge>
-        <span className="text-sm text-gray-500">{date}</span>
-      </div>
-      <h3 className="text-lg font-semibold mb-1">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
-      <div className="w-full h-2 bg-gray-100 rounded-full mt-4">
-        <div className="w-1/3 h-full bg-green-500 rounded-full"></div>
-      </div>
-    </Card>
-  )
-}
-
-function NavButton({ icon, label, active }) {
-  return (
-    <button className={`flex flex-col items-center px-4 py-1 ${active ? 'text-primary' : 'text-gray-500'}`}>
-      {icon}
-      <span className="text-xs mt-1">{label}</span>
-    </button>
   )
 }
