@@ -24,7 +24,7 @@ export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState("All")
 
   return (
-    <div className="container max-w-md mx-auto px-4 pb-[88px] pt-12 bg-gradient-to-b from-[#F2F2F7] to-white">
+    <div className="container max-w-md mx-auto px-4 pb-[88px] pt-12 bg-brand-gray-50">
       {/* Header */}
       <div className={`flex justify-between items-center ${SPACING.header}`}>
         <h1 className="text-[34px] font-semibold text-[#1C1C1E] leading-tight">
@@ -78,15 +78,11 @@ export default function HomePage() {
       </div>
 
       {/* Stats Card */}
-      <Card className="mb-8 border-0 overflow-hidden">
+      <Card className="mb-8 border-0 overflow-hidden rounded-[28px]">
         <div className="relative">
-          {/* Gradient Background */}
-          <div className="absolute inset-0 bg-stats-gradient opacity-95" />
+          {/* Exact Gradient from Reference */}
+          <div className="absolute inset-0 bg-stats-gradient" />
           
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-          
-          {/* Content */}
           <div className="relative px-8 py-6 grid grid-cols-3 gap-6">
             <StatItem number="2" label="Total Projects" />
             <StatItem number="1" label="In Progress" />
@@ -114,7 +110,7 @@ export default function HomePage() {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-tab-blur backdrop-blur-xl border-t border-[#E5E5EA]">
+      <div className="fixed bottom-0 left-0 right-0 bg-tab-blur backdrop-blur-xl border-t border-brand-gray-100">
         <div className={`flex justify-around items-center ${SPACING.tabBar} max-w-md mx-auto`}>
           <TabBarItem icon={<Home className="h-6 w-6" />} label="Projects" active />
           <TabBarItem icon={<Globe className="h-6 w-6" />} label="Research" />
@@ -177,11 +173,8 @@ function TabBarItem({ icon, label, active }) {
 function StatItem({ number, label }) {
   return (
     <div className="text-center">
-      <div className="text-3xl font-semibold text-white mb-1 relative">
-        {/* Text Gradient */}
-        <span className="relative z-10 drop-shadow-sm">{number}</span>
-        {/* Glow Effect */}
-        <div className="absolute inset-0 bg-white/10 blur-sm" />
+      <div className="text-3xl font-semibold text-white mb-1">
+        {number}
       </div>
       <div className="text-sm text-white/90">{label}</div>
     </div>
