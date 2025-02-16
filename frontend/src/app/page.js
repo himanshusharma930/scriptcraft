@@ -6,13 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, Filter, Settings, Home, FileText, Globe, User } from "lucide-react"
-import { CreateButton } from "@/components/create-button"
-import { CreateProjectSheet } from "@/components/create-project-sheet"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ProjectCard } from "@/components/project-card"
 import { BottomNavigation } from "@/components/bottom-navigation"
 import { cn } from "@/lib/utils"
 import { FilterPopover } from "@/components/filter-popover"
+import { CreateProjectSheet } from "@/components/create-project-sheet"
 
 function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
@@ -96,7 +95,6 @@ function HomePage() {
         </div>
       </div>
 
-      <CreateButton onClick={() => setCreateOpen(true)} />
       <BottomNavigation />
 
       <CreateProjectSheet 
