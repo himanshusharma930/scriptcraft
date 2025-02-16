@@ -1,190 +1,169 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Mic, Send, Sparkles, ArrowLeft } from "lucide-react"
-import { MessageBubble } from "@/components/message-bubble"
-import { QuickActions } from "@/components/quick-actions"
+import { ArrowLeft, Send, Lightbulb, Video, Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { aiService } from "@/lib/ai-service"
-import { useToast } from "@/hooks/use-toast"
-import { useAIContext } from "@/components/ai-context-provider"
+
+const QUICK_ACTIONS = [
+  { icon: Lightbulb, label: "Content Ideas" },
+  { icon: Video, label: "Script Writing" },
+  { icon: Sparkles, label: "Optimization" }
+]
 
 export default function AiAssistantPage() {
   const router = useRouter()
-  const [message, setMessage] = useState("")
   const [messages, setMessages] = useState([])
-  const [isRecording, setIsRecording] = useState(false)
-  const [isTyping, setIsTyping] = useState(false)
-  const scrollRef = useRef(null)
-  const { toast } = useToast()
-  const { context, setContext } = useAIContext()
+  const [inputMessage, setInputMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Auto scroll
-  useEffect(() => {
-    scrollRef.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: 'smooth'
-    })
-  }, [messages])
+  const handleQuickAction = (action) => {
+    setInputMessage(`Help me with ${action.toLowerCase()}`)
+  }
 
-  const handleSend = async () => {
-    if (!message.trim()) return
-    
-    // Add user message
-    const userMessage = { role: 'user', content: message }
-    setMessages(prev => [...prev, userMessage])
-    setMessage("")
-    setIsTyping(true)
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim() || isLoading) return
 
     try {
-      const response = await aiService.generateResponse(message, context)
+      setIsLoading(true)
       
-      // Handle streaming response
-      let assistantMessage = ""
-      for await (const chunk of response) {
-        assistantMessage += chunk.choices[0]?.delta?.content || ""
-        setMessages(prev => [
-          ...prev.slice(0, -1),
-          {
-            role: 'assistant',
-            content: assistantMessage,
-            isStreaming: true
-          }
-        ])
-      }
+      // Add user message
+      const userMessage = { content: inputMessage, type: 'user' }
+      setMessages(prev => [...prev, userMessage])
+      setInputMessage("")
 
-      // Final message
-      setMessages(prev => [
-        ...prev.slice(0, -1),
-        {
-          role: 'assistant',
-          content: assistantMessage,
-          isStreaming: false,
-          context: { ...context } // Store context with message
-        }
-      ])
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to generate response. Please try again.",
-        variant: "destructive"
+      const response = await fetch('http://167.71.198.52:15432/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer anything'
+        },
+        body: JSON.stringify({
+          model: 'o1-mini',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a helpful YouTube content creation assistant.'
+            },
+            {
+              role: 'user',
+              content: inputMessage
+            }
+          ]
+        })
       })
+
+      const data = await response.json()
+      
+      if (data.choices && data.choices[0]?.message) {
+        setMessages(prev => [...prev, {
+          content: data.choices[0].message.content,
+          type: 'assistant'
+        }])
+      }
+    } catch (error) {
+      console.error('Error:', error)
     } finally {
-      setIsTyping(false)
+      setIsLoading(false)
     }
   }
 
-  const handleQuickAction = (action) => {
-    setMessage(`Help me with ${action.toLowerCase()}`)
-  }
-
   return (
-    <div className="fixed inset-0 bg-brand-light-bg dark:bg-brand-dark-bg">
+    <div className="fixed inset-0 bg-[#F8F8FA] dark:bg-gray-950">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-brand-light-bg/90 dark:bg-brand-dark-bg/90 
-                      backdrop-blur-xl border-b 
-                      border-brand-light-border dark:border-brand-dark-border">
+      <div className="sticky top-0 z-50 bg-[#F8F8FA] dark:bg-gray-950">
         <div className="flex items-center px-4 h-14">
           <Button
             variant="ghost"
             size="icon"
-            className="mr-3 h-10 w-10 rounded-full"
+            className="mr-3"
             onClick={() => router.back()}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r 
-                          from-brand-blue-start to-brand-blue-end 
+            <div className="h-10 w-10 rounded-full bg-blue-500 
                           flex items-center justify-center">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-[17px] font-semibold 
-                           text-brand-light-text-primary dark:text-brand-dark-text-primary">
-                YouTube Assistant
-              </h1>
-              <p className="text-[13px] text-brand-gray-300 dark:text-brand-gray-dark">
-                Powered by AI
-              </p>
+              <h1 className="text-lg font-semibold">YouTube Assistant</h1>
+              <p className="text-sm text-gray-500">Powered by AI</p>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <QuickActions onActionSelect={handleQuickAction} />
+        <div className="px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {QUICK_ACTIONS.map((action) => (
+              <Button
+                key={action.label}
+                variant="outline"
+                className="flex-none rounded-full"
+                onClick={() => handleQuickAction(action.label)}
+              >
+                <action.icon className="h-4 w-4 mr-2" />
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Help Button */}
+        <div className="px-4 py-2">
+          <Button 
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-full h-12"
+            onClick={() => handleQuickAction("content ideas")}
+          >
+            Help me with content ideas
+          </Button>
+        </div>
       </div>
 
       {/* Messages */}
-      <ScrollArea 
-        ref={scrollRef}
-        className="h-[calc(100vh-130px)]"
-      >
-        <div className="px-4 py-4 space-y-4">
-          {messages.map((msg, i) => (
-            <MessageBubble 
-              key={i}
-              message={msg}
-              isStreaming={msg.isStreaming}
-              onSuggestionSelect={(suggestion) => setMessage(suggestion)}
-            />
-          ))}
-        </div>
-      </ScrollArea>
+      <div className="flex-1 overflow-y-auto px-4 py-4">
+        {messages.map((msg, i) => (
+          <div
+            key={i}
+            className={cn(
+              "mb-4",
+              msg.type === 'user' ? 'flex justify-end' : 'flex justify-start'
+            )}
+          >
+            <div className={cn(
+              "max-w-[85%] rounded-2xl px-4 py-3",
+              msg.type === 'user' 
+                ? "bg-blue-500 text-white" 
+                : "bg-gray-100 dark:bg-gray-800"
+            )}>
+              <p className="text-[15px]">{msg.content}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* Input Area */}
-      <div className="fixed bottom-0 left-0 right-0 bg-brand-light-bg/90 
-                      dark:bg-brand-dark-bg/90 backdrop-blur-xl border-t 
-                      border-brand-light-border dark:border-brand-dark-border">
-        <div className="px-4 py-4">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn(
-                "h-10 w-10 rounded-full",
-                "text-brand-gray-300 dark:text-brand-gray-dark",
-                "hover:bg-brand-gray-100 dark:hover:bg-brand-dark-secondary",
-                isRecording && "text-brand-blue-start dark:text-brand-blue-dark"
-              )}
-              onClick={() => setIsRecording(!isRecording)}
-            >
-              <Mic className="h-5 w-5" />
-            </Button>
-            
-            <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Message YouTube Assistant..."
-              className={cn(
-                "h-10 px-4",
-                "bg-brand-gray-100 dark:bg-brand-dark-secondary",
-                "border-0 rounded-2xl",
-                "placeholder:text-brand-gray-300 dark:placeholder:text-brand-gray-dark",
-                "focus-visible:ring-2 focus-visible:ring-brand-blue-start dark:focus-visible:ring-brand-blue-dark"
-              )}
-            />
-            
-            <Button
-              onClick={handleSend}
-              disabled={!message.trim() || isTyping}
-              className={cn(
-                "h-10 w-10 rounded-full",
-                "bg-brand-blue-start dark:bg-brand-blue-dark",
-                "hover:bg-brand-blue-start/90 dark:hover:bg-brand-blue-dark/90",
-                "disabled:opacity-50",
-                "transition-all duration-200"
-              )}
-            >
-              <Send className="h-5 w-5 text-white" />
-            </Button>
-          </div>
+      <div className="sticky bottom-0 px-4 py-4 bg-[#F8F8FA] dark:bg-gray-950 border-t">
+        <div className="flex gap-2">
+          <Input
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder="Message YouTube Assistant..."
+            className="rounded-full"
+          />
+          <Button
+            size="icon"
+            className="rounded-full bg-blue-500 hover:bg-blue-600"
+            onClick={handleSendMessage}
+            disabled={isLoading}
+          >
+            <Send className="h-5 w-5" />
+          </Button>
         </div>
       </div>
     </div>
