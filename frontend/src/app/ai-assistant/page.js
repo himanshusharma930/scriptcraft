@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ArrowLeft, Send, Lightbulb, Video, Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { debugLogger, DEBUG_LEVELS } from '@/lib/debug-utils'
 import { aiService } from "@/lib/ai-service"
+import { toast } from "@/components/ui/toast"
 
 const QUICK_ACTIONS = [
   { icon: Lightbulb, label: "Content Ideas" },
@@ -19,6 +21,29 @@ export default function AiAssistantPage() {
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [networkStatus, setNetworkStatus] = useState('online')
+
+  // Monitor network status
+  useEffect(() => {
+    const handleOnline = () => {
+      setNetworkStatus('online')
+      debugLogger.log(DEBUG_LEVELS.INFO, 'NETWORK', 'Connection restored')
+    }
+
+    const handleOffline = () => {
+      setNetworkStatus('offline')
+      debugLogger.log(DEBUG_LEVELS.WARN, 'NETWORK', 'Connection lost')
+    }
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
 
   const handleQuickAction = (action) => {
     setInputMessage(`Help me with ${action.toLowerCase()}`)
@@ -29,43 +54,48 @@ export default function AiAssistantPage() {
 
     try {
       setIsLoading(true)
-      
+      setError(null)
+
+      debugLogger.log(DEBUG_LEVELS.INFO, 'USER_ACTION', 'Sending message', {
+        content: inputMessage
+      })
+
       // Add user message
       const userMessage = { content: inputMessage, type: 'user' }
       setMessages(prev => [...prev, userMessage])
       setInputMessage("")
 
-      const response = await fetch('http://167.71.198.52:15432/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer anything'
-        },
-        body: JSON.stringify({
-          model: 'o1-mini',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful YouTube content creation assistant.'
-            },
-            {
-              role: 'user',
-              content: inputMessage
-            }
-          ]
-        })
-      })
+      // Check network status
+      if (networkStatus === 'offline') {
+        throw new Error('No internet connection')
+      }
 
-      const data = await response.json()
-      
-      if (data.choices && data.choices[0]?.message) {
+      const response = await aiService.sendMessage(inputMessage)
+
+      if (response.choices && response.choices[0]?.message) {
         setMessages(prev => [...prev, {
-          content: data.choices[0].message.content,
+          content: response.choices[0].message.content,
           type: 'assistant'
         }])
+
+        debugLogger.log(DEBUG_LEVELS.INFO, 'MESSAGE', 'AI response received', {
+          response: response.choices[0].message.content
+        })
+      } else {
+        throw new Error('Invalid response format')
       }
     } catch (error) {
-      console.error('Error:', error)
+      debugLogger.log(DEBUG_LEVELS.ERROR, 'MESSAGE_ERROR', 'Failed to send message', {
+        error: error.message,
+        stack: error.stack
+      })
+
+      setError(error.message)
+      toast({
+        title: "Error",
+        description: error.message || "Failed to get AI response",
+        variant: "destructive"
+      })
     } finally {
       setIsLoading(false)
     }

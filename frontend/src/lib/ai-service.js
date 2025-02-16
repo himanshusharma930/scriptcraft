@@ -1,45 +1,64 @@
-import axios from 'axios'
+import { debugLogger, DEBUG_LEVELS } from './debug-utils'
 
 class AIService {
   constructor() {
-    this.api = axios.create({
-      baseURL: 'http://167.71.198.52:15432',
-      headers: {
-        'Authorization': 'Bearer anything',
-        'Content-Type': 'application/json',
-      },
-      timeout: 30000
-    })
+    this.baseUrl = 'http://167.71.198.52:15432'
+    this.model = 'o1-mini'
+    this.debugLogger = debugLogger
   }
 
   async sendMessage(content) {
+    const requestId = Math.random().toString(36).substring(7)
+    
     try {
-      console.log('Sending request:', {
-        url: '/chat/completions',
-        content
+      this.debugLogger.log(DEBUG_LEVELS.INFO, 'AI_REQUEST', `Starting request ${requestId}`, {
+        content,
+        model: this.model
       })
 
-      const response = await this.api.post('/chat/completions', {
-        model: 'o1-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful YouTube content creation assistant. Help users create better content.'
-          },
-          {
-            role: 'user',
-            content
-          }
-        ]
+      const startTime = performance.now()
+      
+      const response = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer anything'
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a helpful YouTube content creation assistant.'
+            },
+            {
+              role: 'user',
+              content
+            }
+          ]
+        })
       })
 
-      console.log('Response received:', response.data)
-      return response.data
+      const endTime = performance.now()
+      const responseTime = endTime - startTime
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      this.debugLogger.log(DEBUG_LEVELS.INFO, 'AI_RESPONSE', `Request ${requestId} completed`, {
+        responseTime: `${responseTime.toFixed(2)}ms`,
+        status: response.status,
+        data
+      })
+
+      return data
     } catch (error) {
-      console.error('API Error:', {
-        message: error.message,
-        data: error.response?.data,
-        status: error.response?.status
+      this.debugLogger.log(DEBUG_LEVELS.ERROR, 'AI_ERROR', `Request ${requestId} failed`, {
+        error: error.message,
+        stack: error.stack
       })
       throw error
     }
