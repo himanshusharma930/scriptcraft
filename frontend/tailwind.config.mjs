@@ -58,8 +58,24 @@ export default {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+        ios: {
+          blue: {
+            start: '#007AFF',
+            mid: '#0A84FF',
+            end: '#5856D6'
+          },
+          gray: {
+            start: '#8E8E93',
+            end: '#636366'
+          }
+        }
   		},
+      backgroundImage: {
+        'stats-gradient': 'linear-gradient(135deg, #007AFF 0%, #0A84FF 50%, #5856D6 100%)',
+        'card-hover': 'linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0))',
+        'tab-blur': 'linear-gradient(180deg, rgba(242,242,247,0.9) 0%, rgba(242,242,247,0.95) 100%)'
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

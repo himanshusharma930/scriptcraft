@@ -16,17 +16,27 @@ export function CreateButton({ onClick }) {
       className={cn(
         // Base styles
         `relative h-[58px] w-[58px] rounded-full
-         bg-[#007AFF] select-none outline-none
+         overflow-hidden
          shadow-lg shadow-blue-500/25`,
         // Animation
         `transition-all duration-200`,
         // Active state
-        isPressed && 'transform scale-[0.97] bg-[#0A84FF] shadow-md'
+        isPressed && 'transform scale-[0.97]'
       )}
     >
+      {/* Gradient Background */}
+      <div className={`
+        absolute inset-0 bg-gradient-to-br 
+        from-ios-blue-start via-ios-blue-mid to-ios-blue-end
+        transition-opacity duration-200
+        ${isPressed ? 'opacity-90' : 'opacity-100'}
+      `} />
+
+      {/* Icon */}
       <Plus 
         className={cn(
-          `absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+          `relative z-10
+           absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
            h-7 w-7 text-white transition-transform duration-200`,
           isPressed && 'scale-[0.97]'
         )}

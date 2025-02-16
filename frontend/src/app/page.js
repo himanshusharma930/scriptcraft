@@ -14,7 +14,7 @@ const SPACING = {
   header: "mb-8",
   search: "mb-6",
   filters: "mb-8",
-  stats: "mb-6",
+  stats: "mb-8",
   projects: "space-y-4",
   tabBar: "h-[83px] pt-2 pb-7" // iOS standard
 }
@@ -24,7 +24,7 @@ export default function HomePage() {
   const [activeFilter, setActiveFilter] = useState("All")
 
   return (
-    <div className={`container max-w-md mx-auto ${SPACING.container} bg-[#F2F2F7]`}>
+    <div className="container max-w-md mx-auto px-4 pb-[88px] pt-12 bg-gradient-to-b from-[#F2F2F7] to-white">
       {/* Header */}
       <div className={`flex justify-between items-center ${SPACING.header}`}>
         <h1 className="text-[34px] font-semibold text-[#1C1C1E] leading-tight">
@@ -78,16 +78,25 @@ export default function HomePage() {
       </div>
 
       {/* Stats Card */}
-      <Card className={`bg-gradient-to-r from-[#007AFF] to-[#0A84FF] rounded-3xl border-0 ${SPACING.stats}`}>
-        <div className="px-8 py-6 grid grid-cols-3 gap-6">
-          <StatItem number="2" label="Total Projects" />
-          <StatItem number="1" label="In Progress" />
-          <StatItem number="0" label="Completed" />
+      <Card className="mb-8 border-0 overflow-hidden">
+        <div className="relative">
+          {/* Gradient Background */}
+          <div className="absolute inset-0 bg-stats-gradient opacity-95" />
+          
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+          
+          {/* Content */}
+          <div className="relative px-8 py-6 grid grid-cols-3 gap-6">
+            <StatItem number="2" label="Total Projects" />
+            <StatItem number="1" label="In Progress" />
+            <StatItem number="0" label="Completed" />
+          </div>
         </div>
       </Card>
 
       {/* Project Cards */}
-      <div className={SPACING.projects}>
+      <div className="space-y-4">
         <ProjectCard 
           status="In-Progress"
           title="How AI is Changing Content Creation"
@@ -105,7 +114,7 @@ export default function HomePage() {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F7]/90 backdrop-blur-lg border-t border-[#E5E5EA]">
+      <div className="fixed bottom-0 left-0 right-0 bg-tab-blur backdrop-blur-xl border-t border-[#E5E5EA]">
         <div className={`flex justify-around items-center ${SPACING.tabBar} max-w-md mx-auto`}>
           <TabBarItem icon={<Home className="h-6 w-6" />} label="Projects" active />
           <TabBarItem icon={<Globe className="h-6 w-6" />} label="Research" />
@@ -168,7 +177,12 @@ function TabBarItem({ icon, label, active }) {
 function StatItem({ number, label }) {
   return (
     <div className="text-center">
-      <div className="text-3xl font-bold text-white mb-1">{number}</div>
+      <div className="text-3xl font-semibold text-white mb-1 relative">
+        {/* Text Gradient */}
+        <span className="relative z-10 drop-shadow-sm">{number}</span>
+        {/* Glow Effect */}
+        <div className="absolute inset-0 bg-white/10 blur-sm" />
+      </div>
       <div className="text-sm text-white/90">{label}</div>
     </div>
   )
