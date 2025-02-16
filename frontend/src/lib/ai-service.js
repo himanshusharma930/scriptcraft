@@ -1,79 +1,48 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://167.71.198.52:15432'
-const AVAILABLE_MODELS = ['gpt-4o', 'claude-3.5-sonnet', 'o1', 'o1-mini', 'o3-mini']
-
 class AIService {
   constructor() {
     this.api = axios.create({
-      baseURL: BASE_URL,
+      baseURL: 'http://167.71.198.52:15432',
       headers: {
         'Authorization': 'Bearer anything',
         'Content-Type': 'application/json',
       },
-      // Add CORS headers
-      withCredentials: false,
       timeout: 30000
     })
-
-    // Add request interceptor for debugging
-    this.api.interceptors.request.use(request => {
-      console.log('API Request:', request)
-      return request
-    })
-
-    // Add response interceptor for error handling
-    this.api.interceptors.response.use(
-      response => {
-        console.log('API Response:', response)
-        return response
-      },
-      error => {
-        console.error('API Error:', {
-          message: error.message,
-          response: error.response?.data,
-          status: error.response?.status
-        })
-        throw new Error(error.response?.data?.error || 'Failed to connect to AI service')
-      }
-    )
   }
 
-  async chat(messages, model = 'o1-mini') {
+  async sendMessage(content) {
     try {
-      if (!AVAILABLE_MODELS.includes(model)) {
-        throw new Error('Invalid model selected')
-      }
+      console.log('Sending request:', {
+        url: '/chat/completions',
+        content
+      })
 
       const response = await this.api.post('/chat/completions', {
-        model,
+        model: 'o1-mini',
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful YouTube content creation assistant. Provide concise, practical advice for content creators.'
+            content: 'You are a helpful YouTube content creation assistant. Help users create better content.'
           },
-          ...messages.map(msg => ({
-            role: msg.role,
-            content: msg.content
-          }))
-        ],
-        temperature: 0.7,
-        max_tokens: 800
+          {
+            role: 'user',
+            content
+          }
+        ]
       })
 
-      if (!response.data || !response.data.choices) {
-        throw new Error('Invalid response format')
-      }
-
+      console.log('Response received:', response.data)
       return response.data
     } catch (error) {
-      console.error('Chat completion error:', error)
+      console.error('API Error:', {
+        message: error.message,
+        data: error.response?.data,
+        status: error.response?.status
+      })
       throw error
     }
-  }
-
-  getAvailableModels() {
-    return AVAILABLE_MODELS
   }
 }
 

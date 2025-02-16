@@ -5,8 +5,7 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Mic, Send, Sparkles, AlertCircle } from "lucide-react"
-import { MessageBubble } from "./message-bubble"
+import { Mic, Send, Sparkles } from "lucide-react"
 import { aiService } from "@/lib/ai-service"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
@@ -15,25 +14,25 @@ export function AiAssistantSheet({ open, onOpenChange }) {
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
   const scrollRef = useRef(null)
   const { toast } = useToast()
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
-    setError(null)
 
     try {
       setIsLoading(true)
-      
+      console.log('Sending message:', inputMessage)
+
       // Add user message
-      const userMessage = { role: 'user', content: inputMessage }
-      setMessages(prev => [...prev, userMessage])
+      const newMessage = { role: 'user', content: inputMessage }
+      setMessages(prev => [...prev, newMessage])
       setInputMessage("")
 
       // Get AI response
-      const response = await aiService.chat([...messages, userMessage])
-      
+      const response = await aiService.sendMessage(inputMessage)
+      console.log('AI Response:', response)
+
       if (response.choices && response.choices[0]?.message) {
         setMessages(prev => [...prev, {
           role: 'assistant',
@@ -43,10 +42,10 @@ export function AiAssistantSheet({ open, onOpenChange }) {
         throw new Error('Invalid response format')
       }
     } catch (error) {
-      setError(error.message)
+      console.error('Message error:', error)
       toast({
         title: "Error",
-        description: error.message || "Failed to get AI response",
+        description: "Failed to get AI response. Please try again.",
         variant: "destructive"
       })
     } finally {
@@ -68,10 +67,8 @@ export function AiAssistantSheet({ open, onOpenChange }) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
         side="bottom" 
-        className={cn(
-          "px-0 pt-0 pb-0 h-[85vh] rounded-t-[32px] border-t-0",
-          "bg-brand-light-bg dark:bg-brand-dark-bg"
-        )}
+        className="px-0 pt-0 pb-0 h-[85vh] rounded-t-[32px] border-t-0
+                   bg-brand-light-bg dark:bg-brand-dark-bg"
       >
         <SheetTitle className="sr-only">AI Assistant</SheetTitle>
 
@@ -106,21 +103,25 @@ export function AiAssistantSheet({ open, onOpenChange }) {
         >
           <div className="space-y-4">
             {messages.map((msg, i) => (
-              <MessageBubble 
+              <div
                 key={i}
-                message={msg}
-                isLoading={isLoading && i === messages.length - 1}
-              />
-            ))}
-            
-            {error && (
-              <div className="flex items-center gap-2 p-4 rounded-lg 
-                             bg-red-50 dark:bg-red-900/10 
-                             text-red-600 dark:text-red-400">
-                <AlertCircle className="h-5 w-5" />
-                <p className="text-sm">{error}</p>
+                className={cn(
+                  "flex",
+                  msg.role === 'user' ? 'justify-end' : 'justify-start'
+                )}
+              >
+                <div className={cn(
+                  "max-w-[85%] rounded-2xl px-4 py-3",
+                  msg.role === 'user' 
+                    ? "bg-brand-blue-start text-white" 
+                    : "bg-brand-gray-100 dark:bg-brand-dark-secondary"
+                )}>
+                  <p className="text-[15px] leading-relaxed">
+                    {msg.content}
+                  </p>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         </ScrollArea>
 
@@ -135,25 +136,14 @@ export function AiAssistantSheet({ open, onOpenChange }) {
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
               placeholder="Message YouTube Assistant..."
               disabled={isLoading}
-              className={cn(
-                "h-10 px-4",
-                "bg-brand-gray-100 dark:bg-brand-dark-secondary",
-                "border-0 rounded-2xl",
-                "placeholder:text-brand-gray-300 dark:placeholder:text-brand-gray-dark",
-                "focus-visible:ring-2 focus-visible:ring-brand-blue-start dark:focus-visible:ring-brand-blue-dark"
-              )}
+              className="h-10 px-4 bg-brand-gray-100 dark:bg-brand-dark-secondary
+                        border-0 rounded-2xl"
             />
             
             <Button
               onClick={handleSendMessage}
               disabled={!inputMessage.trim() || isLoading}
-              className={cn(
-                "h-10 w-10 rounded-full",
-                "bg-brand-blue-start dark:bg-brand-blue-dark",
-                "hover:bg-brand-blue-start/90 dark:hover:bg-brand-blue-dark/90",
-                "disabled:opacity-50",
-                "transition-all duration-200"
-              )}
+              className="h-10 w-10 rounded-full bg-brand-blue-start dark:bg-brand-blue-dark"
             >
               {isLoading ? (
                 <div className="h-5 w-5 border-2 border-white border-t-transparent 
