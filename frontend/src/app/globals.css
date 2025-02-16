@@ -65,7 +65,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* iOS safe area handling */
+  /* iOS safe area handling without status bar */
   @supports (padding: max(0px)) {
     .container {
       padding-left: max(1rem, env(safe-area-inset-left));

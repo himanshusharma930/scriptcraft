@@ -60,7 +60,7 @@ export default function AiAssistantPage() {
       <div className="sticky top-0 z-50 bg-brand-light-bg/90 dark:bg-brand-dark-bg/90 
                       backdrop-blur-xl border-b 
                       border-brand-light-border dark:border-brand-dark-border">
-        <div className="flex items-center px-4 h-14">
+        <div className="flex items-center px-4 h-14 pt-2">
           <Button
             variant="ghost"
             size="icon"
