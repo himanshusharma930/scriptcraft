@@ -10,16 +10,30 @@ class AIService {
       headers: {
         'Authorization': 'Bearer anything',
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
       },
+      // Add CORS headers
+      withCredentials: false,
       timeout: 30000
     })
 
-    // Response interceptor
+    // Add request interceptor for debugging
+    this.api.interceptors.request.use(request => {
+      console.log('API Request:', request)
+      return request
+    })
+
+    // Add response interceptor for error handling
     this.api.interceptors.response.use(
-      response => response,
+      response => {
+        console.log('API Response:', response)
+        return response
+      },
       error => {
-        console.error('API Error:', error.response?.data || error.message)
+        console.error('API Error:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status
+        })
         throw new Error(error.response?.data?.error || 'Failed to connect to AI service')
       }
     )
@@ -38,11 +52,18 @@ class AIService {
             role: 'system',
             content: 'You are a helpful YouTube content creation assistant. Provide concise, practical advice for content creators.'
           },
-          ...messages
+          ...messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
         ],
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 800
       })
+
+      if (!response.data || !response.data.choices) {
+        throw new Error('Invalid response format')
+      }
 
       return response.data
     } catch (error) {

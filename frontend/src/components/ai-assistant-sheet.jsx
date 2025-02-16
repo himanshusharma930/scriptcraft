@@ -5,10 +5,8 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Mic, Send, Sparkles, Settings } from "lucide-react"
+import { Mic, Send, Sparkles, AlertCircle } from "lucide-react"
 import { MessageBubble } from "./message-bubble"
-import { QuickActions } from "./quick-actions"
 import { aiService } from "@/lib/ai-service"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
@@ -17,12 +15,13 @@ export function AiAssistantSheet({ open, onOpenChange }) {
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedModel, setSelectedModel] = useState('o1-mini')
+  const [error, setError] = useState(null)
   const scrollRef = useRef(null)
   const { toast } = useToast()
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
+    setError(null)
 
     try {
       setIsLoading(true)
@@ -33,7 +32,7 @@ export function AiAssistantSheet({ open, onOpenChange }) {
       setInputMessage("")
 
       // Get AI response
-      const response = await aiService.chat([...messages, userMessage], selectedModel)
+      const response = await aiService.chat([...messages, userMessage])
       
       if (response.choices && response.choices[0]?.message) {
         setMessages(prev => [...prev, {
@@ -44,14 +43,12 @@ export function AiAssistantSheet({ open, onOpenChange }) {
         throw new Error('Invalid response format')
       }
     } catch (error) {
+      setError(error.message)
       toast({
         title: "Error",
         description: error.message || "Failed to get AI response",
         variant: "destructive"
       })
-      
-      // Remove the last user message if there was an error
-      setMessages(prev => prev.slice(0, -1))
     } finally {
       setIsLoading(false)
     }
@@ -78,42 +75,27 @@ export function AiAssistantSheet({ open, onOpenChange }) {
       >
         <SheetTitle className="sr-only">AI Assistant</SheetTitle>
 
-        {/* Header with Model Selection */}
+        {/* Header */}
         <div className="sticky top-0 z-50 px-6 pt-3 pb-4 
                        bg-brand-light-bg dark:bg-brand-dark-bg 
                        border-b border-brand-light-border dark:border-brand-dark-border">
           <div className="w-[36px] h-[5px] bg-brand-gray-100 dark:bg-brand-dark-secondary 
                          rounded-full mx-auto mb-4" />
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r 
-                            from-brand-blue-start to-brand-blue-end 
-                            flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h3 className="text-[17px] font-semibold 
-                             text-brand-light-text-primary dark:text-brand-dark-text-primary">
-                  YouTube Assistant
-                </h3>
-                <p className="text-[13px] text-brand-gray-300 dark:text-brand-gray-dark">
-                  Powered by AI
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r 
+                          from-brand-blue-start to-brand-blue-end 
+                          flex items-center justify-center">
+              <Sparkles className="h-5 w-5 text-white" />
             </div>
-            
-            <Select value={selectedModel} onValueChange={setSelectedModel}>
-              <SelectTrigger className="w-[140px] h-9">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {aiService.getAvailableModels().map(model => (
-                  <SelectItem key={model} value={model}>
-                    {model}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div>
+              <h3 className="text-[17px] font-semibold 
+                           text-brand-light-text-primary dark:text-brand-dark-text-primary">
+                YouTube Assistant
+              </h3>
+              <p className="text-[13px] text-brand-gray-300 dark:text-brand-gray-dark">
+                Powered by AI
+              </p>
+            </div>
           </div>
         </div>
 
@@ -130,6 +112,15 @@ export function AiAssistantSheet({ open, onOpenChange }) {
                 isLoading={isLoading && i === messages.length - 1}
               />
             ))}
+            
+            {error && (
+              <div className="flex items-center gap-2 p-4 rounded-lg 
+                             bg-red-50 dark:bg-red-900/10 
+                             text-red-600 dark:text-red-400">
+                <AlertCircle className="h-5 w-5" />
+                <p className="text-sm">{error}</p>
+              </div>
+            )}
           </div>
         </ScrollArea>
 
