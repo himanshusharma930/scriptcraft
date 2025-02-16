@@ -6,8 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, Filter, Settings, Home as HomeIcon, FileText, Globe, User } from "lucide-react"
 import Link from "next/link"
+import { CreateProjectSheet } from "@/components/create-project-sheet"
+import { useState } from "react"
 
 export default function Home() {
+  const [createOpen, setCreateOpen] = useState(false)
+
   return (
     <div className="container max-w-md mx-auto px-4 pb-20">
       {/* Header */}
@@ -73,9 +77,18 @@ export default function Home() {
       </div>
 
       {/* Floating Action Button */}
-      <Button className="fixed bottom-20 right-4 h-14 w-14 rounded-full shadow-lg">
+      <Button 
+        className="fixed bottom-20 right-4 h-14 w-14 rounded-full shadow-lg"
+        onClick={() => setCreateOpen(true)}
+      >
         <span className="text-2xl">+</span>
       </Button>
+
+      {/* Add Create Project Sheet */}
+      <CreateProjectSheet 
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      />
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
