@@ -14,6 +14,13 @@ import { useState, useRef } from "react"
 import { useSheetGestures } from "@/hooks/use-sheet-gestures"
 import { cn } from "@/lib/utils"
 
+const SHEET_CLASSES = {
+  content: "px-0 pt-0 pb-8 h-[85vh] rounded-t-[32px] border-t-0 bg-[#F2F2F7] overflow-hidden",
+  handle: "sticky top-0 z-50 bg-[#F2F2F7] pt-3 pb-4",
+  input: "h-[46px] bg-white border-[#E5E5EA] rounded-xl text-[17px] placeholder:text-[#8E8E93] focus:ring-2 focus:ring-[#007AFF] transition-shadow duration-200",
+  button: "h-[54px] bg-[#007AFF] hover:bg-[#007AFF]/90 text-[17px] font-semibold rounded-2xl"
+}
+
 export function CreateProjectSheet({ open, onOpenChange }) {
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const scrollRef = useRef(null)
@@ -38,8 +45,7 @@ export function CreateProjectSheet({ open, onOpenChange }) {
       <SheetContent 
         side="bottom" 
         className={cn(
-          "px-0 pt-0 pb-8 h-[85vh] rounded-t-[32px] border-t-0",
-          "bg-[#F2F2F7] overflow-hidden",
+          SHEET_CLASSES.content,
           "motion-safe:animate-sheet-up",
           isDragging && 'transition-none',
           'transform-gpu'
@@ -55,7 +61,7 @@ export function CreateProjectSheet({ open, onOpenChange }) {
         </SheetTitle>
 
         {/* Drag Handle Area */}
-        <div className="sticky top-0 z-50 bg-[#F2F2F7] pt-3 pb-4">
+        <div className={SHEET_CLASSES.handle}>
           <div className="w-[36px] h-[5px] bg-[#E5E5EA] rounded-full mx-auto" />
         </div>
 
@@ -84,10 +90,10 @@ export function CreateProjectSheet({ open, onOpenChange }) {
                 <Label className="text-[17px] text-[#1C1C1E]">Project Title</Label>
                 <Input 
                   placeholder="Enter project title"
-                  className="h-[46px] bg-white border-[#E5E5EA] rounded-xl
-                           text-[17px] placeholder:text-[#8E8E93]
-                           focus:ring-2 focus:ring-[#007AFF]
-                           transition-shadow duration-200"
+                  className={cn(
+                    SHEET_CLASSES.input,
+                    "focus:ring-2 focus:ring-[#007AFF]"
+                  )}
                 />
               </div>
 
@@ -119,21 +125,21 @@ export function CreateProjectSheet({ open, onOpenChange }) {
                 <Label className="text-[17px] text-[#1C1C1E]">Description</Label>
                 <Textarea 
                   placeholder="What's your project about?"
-                  className="min-h-[100px] bg-white border-[#E5E5EA] 
-                           text-[17px] placeholder:text-[#8E8E93]
-                           focus:ring-2 focus:ring-[#007AFF]
-                           transition-shadow duration-200"
+                  className={cn(
+                    "min-h-[100px] bg-white border-[#E5E5EA]",
+                    "text-[17px] placeholder:text-[#8E8E93]",
+                    "focus:ring-2 focus:ring-[#007AFF]",
+                    "transition-shadow duration-200"
+                  )}
                 />
               </div>
 
               {/* Create Button */}
               <Button 
                 className={cn(
-                  "w-full h-[54px] mt-8",
-                  "bg-[#007AFF] hover:bg-[#007AFF]/90",
-                  "text-[17px] font-semibold rounded-2xl",
-                  "transition-all duration-200",
-                  "active:scale-[0.98]"
+                  "w-full",
+                  SHEET_CLASSES.button,
+                  "mt-8 transition-all duration-200 active:scale-[0.98]"
                 )}
               >
                 Create Project
