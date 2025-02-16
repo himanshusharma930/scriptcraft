@@ -15,7 +15,7 @@ export async function sendChatMessage(message) {
       messages: [
         {
           role: 'system',
-          content: 'You are a helpful YouTube content creation assistant. Help users create better content.'
+          content: 'You are a helpful YouTube content creation assistant.'
         },
         {
           role: 'user',
@@ -28,12 +28,4 @@ export async function sendChatMessage(message) {
     console.error('Chat error:', error)
     throw error
   }
-}
-
-export const CONTENT_PROMPTS = {
-  scriptWriting: "Create a YouTube script outline for:",
-  thumbnailIdeas: "Generate thumbnail ideas for:",
-  titleSuggestions: "Suggest engaging titles for:",
-  hookWriting: "Write an attention-grabbing hook for:",
-  seoOptimization: "Provide SEO optimization suggestions for:"
 }

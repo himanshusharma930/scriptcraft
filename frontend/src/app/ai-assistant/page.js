@@ -3,15 +3,14 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Send, Sparkles, Lightbulb, Video, Zap } from "lucide-react"
+import { ArrowLeft, Send, Sparkles, Lightbulb, Video } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { sendChatMessage } from "@/lib/ai-service"
 
 const QUICK_ACTIONS = [
   { icon: Lightbulb, label: "Content Ideas" },
-  { icon: Video, label: "Script Writing" },
-  { icon: Zap, label: "Optimization" }
+  { icon: Video, label: "Script Writing" }
 ]
 
 export default function AiAssistantPage() {
@@ -53,14 +52,14 @@ export default function AiAssistantPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black">
+    <div className="fixed inset-0 bg-[#000000]">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-gray-800">
+      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl">
         <div className="flex items-center px-4 h-14">
           <Button
             variant="ghost"
             size="icon"
-            className="mr-3 text-white hover:bg-gray-800"
+            className="mr-3 text-white hover:bg-white/10"
             onClick={() => router.back()}
           >
             <ArrowLeft className="h-5 w-5" />
@@ -85,8 +84,8 @@ export default function AiAssistantPage() {
               <Button
                 key={action.label}
                 variant="outline"
-                className="flex-none rounded-full bg-gray-900 border-gray-800 
-                          text-white hover:bg-gray-800"
+                className="flex-none rounded-full bg-[#1C1C1E] border-[#2C2C2E] 
+                          text-white hover:bg-[#2C2C2E]"
                 onClick={() => handleQuickAction(action.label)}
               >
                 <action.icon className="h-4 w-4 mr-2" />
@@ -100,7 +99,7 @@ export default function AiAssistantPage() {
         <div className="px-4 py-2">
           <Button 
             className="w-full bg-blue-500 hover:bg-blue-600 text-white 
-                       rounded-full h-12 font-medium"
+                       rounded-full h-12"
             onClick={() => handleQuickAction("content ideas")}
           >
             Help me with content ideas
@@ -123,7 +122,7 @@ export default function AiAssistantPage() {
                 "max-w-[85%] rounded-2xl px-4 py-3",
                 msg.role === 'user' 
                   ? "bg-blue-500 text-white" 
-                  : "bg-gray-800 text-white"
+                  : "bg-[#1C1C1E] text-white"
               )}>
                 <p className="text-[15px]">{msg.content}</p>
               </div>
@@ -133,20 +132,19 @@ export default function AiAssistantPage() {
       </div>
 
       {/* Input Area */}
-      <div className="sticky bottom-0 px-4 py-4 bg-black/90 backdrop-blur-xl 
-                      border-t border-gray-800">
+      <div className="sticky bottom-0 px-4 py-4 bg-black/90 backdrop-blur-xl">
         <div className="flex gap-2">
           <Input
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder="Message YouTube Assistant..."
-            className="rounded-full bg-gray-900 border-gray-800 text-white 
-                      placeholder:text-gray-500 focus:ring-blue-500"
+            className="rounded-full bg-[#1C1C1E] border-[#2C2C2E] text-white 
+                      placeholder:text-gray-500"
           />
           <Button
             size="icon"
-            className="rounded-full bg-blue-500 hover:bg-blue-600 text-white"
+            className="rounded-full bg-blue-500 hover:bg-blue-600"
             onClick={handleSendMessage}
             disabled={isLoading}
           >
@@ -154,7 +152,7 @@ export default function AiAssistantPage() {
               <div className="h-5 w-5 border-2 border-white border-t-transparent 
                              rounded-full animate-spin" />
             ) : (
-              <Send className="h-5 w-5" />
+              <Send className="h-5 w-5 text-white" />
             )}
           </Button>
         </div>
