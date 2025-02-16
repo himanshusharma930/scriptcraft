@@ -54,7 +54,7 @@ export default function AiAssistantPage() {
   return (
     <div className="fixed inset-0 bg-[#000000]">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl">
+      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-xl border-b border-[#1C1C1E]">
         <div className="flex items-center px-4 h-14">
           <Button
             variant="ghost"
@@ -79,13 +79,13 @@ export default function AiAssistantPage() {
 
         {/* Quick Actions */}
         <div className="px-4 py-3">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          <div className="flex gap-2 overflow-x-auto hide-scrollbar">
             {QUICK_ACTIONS.map((action) => (
               <Button
                 key={action.label}
                 variant="outline"
                 className="flex-none rounded-full bg-[#1C1C1E] border-[#2C2C2E] 
-                          text-white hover:bg-[#2C2C2E]"
+                          text-white hover:bg-[#2C2C2E] transition-colors"
                 onClick={() => handleQuickAction(action.label)}
               >
                 <action.icon className="h-4 w-4 mr-2" />
@@ -99,7 +99,7 @@ export default function AiAssistantPage() {
         <div className="px-4 py-2">
           <Button 
             className="w-full bg-blue-500 hover:bg-blue-600 text-white 
-                       rounded-full h-12"
+                       rounded-full h-12 transition-colors"
             onClick={() => handleQuickAction("content ideas")}
           >
             Help me with content ideas
@@ -109,12 +109,12 @@ export default function AiAssistantPage() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4">
-        <div className="space-y-4">
+        <div className="space-y-4 max-w-[85%] mx-auto">
           {messages.map((msg, i) => (
             <div
               key={i}
               className={cn(
-                "flex",
+                "flex animate-in fade-in slide-in-from-bottom-2",
                 msg.role === 'user' ? 'justify-end' : 'justify-start'
               )}
             >
@@ -124,7 +124,7 @@ export default function AiAssistantPage() {
                   ? "bg-blue-500 text-white" 
                   : "bg-[#1C1C1E] text-white"
               )}>
-                <p className="text-[15px]">{msg.content}</p>
+                <p className="text-[15px] leading-relaxed">{msg.content}</p>
               </div>
             </div>
           ))}
@@ -132,19 +132,20 @@ export default function AiAssistantPage() {
       </div>
 
       {/* Input Area */}
-      <div className="sticky bottom-0 px-4 py-4 bg-black/90 backdrop-blur-xl">
-        <div className="flex gap-2">
+      <div className="sticky bottom-0 px-4 py-4 bg-black/90 backdrop-blur-xl 
+                      border-t border-[#1C1C1E]">
+        <div className="flex gap-2 max-w-[85%] mx-auto">
           <Input
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder="Message YouTube Assistant..."
             className="rounded-full bg-[#1C1C1E] border-[#2C2C2E] text-white 
-                      placeholder:text-gray-500"
+                      placeholder:text-gray-500 focus:ring-1 focus:ring-blue-500"
           />
           <Button
             size="icon"
-            className="rounded-full bg-blue-500 hover:bg-blue-600"
+            className="rounded-full bg-blue-500 hover:bg-blue-600 transition-colors"
             onClick={handleSendMessage}
             disabled={isLoading}
           >
