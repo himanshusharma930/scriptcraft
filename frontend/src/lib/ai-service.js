@@ -1,21 +1,21 @@
 import axios from 'axios'
 
-const CODESTRAL_API_KEY = 'Vss1soC3SsvEHFHZC02VKpRkiWsUevxl'
-const BASE_URL = 'https://codestral.mistral.ai/v1'
+const BASE_URL = 'http://167.71.198.52:15432'
+const AVAILABLE_MODELS = ['gpt-4o', 'claude-3.5-sonnet', 'o1', 'o1-mini', 'o3-mini']
 
 class AIService {
   constructor() {
     this.api = axios.create({
       baseURL: BASE_URL,
       headers: {
-        'Authorization': `Bearer ${CODESTRAL_API_KEY}`,
+        'Authorization': 'Bearer anything',
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      timeout: 30000 // 30 second timeout
+      timeout: 30000
     })
 
-    // Add response interceptor for error handling
+    // Response interceptor
     this.api.interceptors.response.use(
       response => response,
       error => {
@@ -25,20 +25,23 @@ class AIService {
     )
   }
 
-  async chat(messages, options = {}) {
+  async chat(messages, model = 'o1-mini') {
     try {
+      if (!AVAILABLE_MODELS.includes(model)) {
+        throw new Error('Invalid model selected')
+      }
+
       const response = await this.api.post('/chat/completions', {
-        model: 'codestral/codestral-latest',
+        model,
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful YouTube content creation assistant.'
+            content: 'You are a helpful YouTube content creation assistant. Provide concise, practical advice for content creators.'
           },
           ...messages
         ],
-        temperature: options.temperature || 0.7,
-        max_tokens: options.maxTokens || 1000,
-        stream: options.stream || false
+        temperature: 0.7,
+        max_tokens: 1000
       })
 
       return response.data
@@ -48,21 +51,8 @@ class AIService {
     }
   }
 
-  async generateSuggestions(prompt, type) {
-    try {
-      const response = await this.api.post('/fim/completions', {
-        model: 'codestral/codestral-latest',
-        prompt,
-        temperature: 0.8,
-        max_tokens: 500,
-        stream: false
-      })
-
-      return response.data
-    } catch (error) {
-      console.error('Suggestion generation error:', error)
-      throw error
-    }
+  getAvailableModels() {
+    return AVAILABLE_MODELS
   }
 }
 

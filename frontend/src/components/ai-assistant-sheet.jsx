@@ -5,8 +5,10 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Mic, Send, Sparkles } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Mic, Send, Sparkles, Settings } from "lucide-react"
 import { MessageBubble } from "./message-bubble"
+import { QuickActions } from "./quick-actions"
 import { aiService } from "@/lib/ai-service"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
@@ -15,6 +17,7 @@ export function AiAssistantSheet({ open, onOpenChange }) {
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedModel, setSelectedModel] = useState('o1-mini')
   const scrollRef = useRef(null)
   const { toast } = useToast()
 
@@ -30,10 +33,9 @@ export function AiAssistantSheet({ open, onOpenChange }) {
       setInputMessage("")
 
       // Get AI response
-      const response = await aiService.chat([...messages, userMessage])
+      const response = await aiService.chat([...messages, userMessage], selectedModel)
       
-      // Add AI response
-      if (response.choices && response.choices[0]) {
+      if (response.choices && response.choices[0]?.message) {
         setMessages(prev => [...prev, {
           role: 'assistant',
           content: response.choices[0].message.content
@@ -47,6 +49,9 @@ export function AiAssistantSheet({ open, onOpenChange }) {
         description: error.message || "Failed to get AI response",
         variant: "destructive"
       })
+      
+      // Remove the last user message if there was an error
+      setMessages(prev => prev.slice(0, -1))
     } finally {
       setIsLoading(false)
     }
@@ -73,27 +78,42 @@ export function AiAssistantSheet({ open, onOpenChange }) {
       >
         <SheetTitle className="sr-only">AI Assistant</SheetTitle>
 
-        {/* Header */}
+        {/* Header with Model Selection */}
         <div className="sticky top-0 z-50 px-6 pt-3 pb-4 
                        bg-brand-light-bg dark:bg-brand-dark-bg 
                        border-b border-brand-light-border dark:border-brand-dark-border">
           <div className="w-[36px] h-[5px] bg-brand-gray-100 dark:bg-brand-dark-secondary 
                          rounded-full mx-auto mb-4" />
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r 
-                          from-brand-blue-start to-brand-blue-end 
-                          flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r 
+                            from-brand-blue-start to-brand-blue-end 
+                            flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-[17px] font-semibold 
+                             text-brand-light-text-primary dark:text-brand-dark-text-primary">
+                  YouTube Assistant
+                </h3>
+                <p className="text-[13px] text-brand-gray-300 dark:text-brand-gray-dark">
+                  Powered by AI
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-[17px] font-semibold 
-                           text-brand-light-text-primary dark:text-brand-dark-text-primary">
-                YouTube Assistant
-              </h3>
-              <p className="text-[13px] text-brand-gray-300 dark:text-brand-gray-dark">
-                Powered by AI
-              </p>
-            </div>
+            
+            <Select value={selectedModel} onValueChange={setSelectedModel}>
+              <SelectTrigger className="w-[140px] h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {aiService.getAvailableModels().map(model => (
+                  <SelectItem key={model} value={model}>
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -121,7 +141,7 @@ export function AiAssistantSheet({ open, onOpenChange }) {
             <Input
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
               placeholder="Message YouTube Assistant..."
               disabled={isLoading}
               className={cn(
@@ -144,7 +164,12 @@ export function AiAssistantSheet({ open, onOpenChange }) {
                 "transition-all duration-200"
               )}
             >
-              <Send className="h-5 w-5 text-white" />
+              {isLoading ? (
+                <div className="h-5 w-5 border-2 border-white border-t-transparent 
+                               rounded-full animate-spin" />
+              ) : (
+                <Send className="h-5 w-5 text-white" />
+              )}
             </Button>
           </div>
         </div>
