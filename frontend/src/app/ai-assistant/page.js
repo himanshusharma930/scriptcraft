@@ -3,16 +3,26 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Send, Sparkles } from "lucide-react"
+import { ArrowLeft, Send, Sparkles, Lightbulb, Video, FileText } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { sendChatMessage } from "@/lib/ai-service"
+
+const QUICK_ACTIONS = [
+  { icon: Lightbulb, label: "Content Ideas" },
+  { icon: Video, label: "Script Writing" },
+  { icon: FileText, label: "Optimization" }
+]
 
 export default function AiAssistantPage() {
   const router = useRouter()
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  const handleQuickAction = (action) => {
+    setInputMessage(`Help me with ${action.toLowerCase()}`)
+  }
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
@@ -66,6 +76,33 @@ export default function AiAssistantPage() {
               <p className="text-sm text-gray-500">Powered by AI</p>
             </div>
           </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {QUICK_ACTIONS.map((action) => (
+              <Button
+                key={action.label}
+                variant="outline"
+                className="flex-none rounded-full"
+                onClick={() => handleQuickAction(action.label)}
+              >
+                <action.icon className="h-4 w-4 mr-2" />
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Help Button */}
+        <div className="px-4 py-2">
+          <Button 
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-full h-12"
+            onClick={() => handleQuickAction("content ideas")}
+          >
+            Help me with content ideas
+          </Button>
         </div>
       </div>
 

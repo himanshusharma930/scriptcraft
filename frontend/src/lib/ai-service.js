@@ -15,7 +15,7 @@ export async function sendChatMessage(message) {
       messages: [
         {
           role: 'system',
-          content: 'You are a helpful YouTube content creation assistant.'
+          content: 'You are a helpful YouTube content creation assistant. Help users create better content.'
         },
         {
           role: 'user',
