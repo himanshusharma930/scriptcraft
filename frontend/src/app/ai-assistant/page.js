@@ -104,17 +104,6 @@ export default function AiAssistantPage() {
               ))}
             </div>
           </div>
-
-          {/* Help Button */}
-          <div className="px-4 py-2">
-            <Button 
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white 
-                         rounded-full h-12 transition-colors"
-              onClick={() => handleQuickAction("content ideas")}
-            >
-              Help me with content ideas
-            </Button>
-          </div>
         </div>
       </div>
 
