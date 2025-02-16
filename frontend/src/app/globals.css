@@ -65,6 +65,15 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* iOS safe area handling */
+  @supports (padding: max(0px)) {
+    .container {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+      padding-bottom: max(5.5rem, env(safe-area-inset-bottom));
+    }
+  }
+
   /* Hide scrollbar but maintain functionality */
   .no-scrollbar::-webkit-scrollbar {
     display: none;

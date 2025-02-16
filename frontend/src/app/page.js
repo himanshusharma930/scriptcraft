@@ -10,19 +10,24 @@ import { CreateButton } from "@/components/create-button"
 import { CreateProjectSheet } from "@/components/create-project-sheet"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ProjectCard } from "@/components/project-card"
+import { AiAssistantSheet } from "@/components/ai-assistant-sheet"
+import { BottomNavigation } from "@/components/bottom-navigation"
 import { StatusBar } from "@/components/status-bar"
 import { cn } from "@/lib/utils"
 
 function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
+  const [aiOpen, setAiOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState("All")
 
   return (
     <>
       <StatusBar />
-      <div className="container max-w-md mx-auto px-4 pb-[88px] pt-[60px] 
-                      bg-brand-light-bg dark:bg-brand-dark-bg
-                      transition-colors duration-200">
+      <div className={cn(
+        "container max-w-md mx-auto px-4 pb-[88px] pt-[60px]",
+        "bg-brand-light-bg dark:bg-brand-dark-bg",
+        "transition-colors duration-200"
+      )}>
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-[34px] font-bold 
@@ -121,38 +126,22 @@ function HomePage() {
           />
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 
-                        bg-brand-light-bg/90 dark:bg-brand-dark-bg/90 
-                        backdrop-blur-xl border-t 
-                        border-brand-light-border dark:border-brand-dark-border">
-          <div className={`flex justify-around items-center h-[83px] pt-2 pb-7 max-w-md mx-auto`}>
-            <TabBarItem icon={<Home className="h-6 w-6" />} label="Projects" active />
-            <TabBarItem icon={<Globe className="h-6 w-6" />} label="Research" />
-            <div className="-mt-8">
-              <CreateButton onClick={() => setCreateOpen(true)} />
-            </div>
-            <TabBarItem icon={<FileText className="h-6 w-6" />} label="Publishing" />
-            <TabBarItem icon={<User className="h-6 w-6" />} label="Profile" />
-          </div>
-        </div>
+        <BottomNavigation 
+          onCreateClick={() => setCreateOpen(true)}
+          onAiClick={() => setAiOpen(true)}
+        />
 
-        <CreateProjectSheet open={createOpen} onOpenChange={setCreateOpen} />
+        <CreateProjectSheet 
+          open={createOpen} 
+          onOpenChange={setCreateOpen}
+        />
+
+        <AiAssistantSheet
+          open={aiOpen}
+          onOpenChange={setAiOpen}
+        />
       </div>
     </>
-  )
-}
-
-function TabBarItem({ icon, label, active }) {
-  return (
-    <button className="flex flex-col items-center">
-      <div className={`mb-1 ${active ? 'text-[#007AFF]' : 'text-[#8E8E93] dark:text-brand-gray-dark'}`}>
-        {icon}
-      </div>
-      <span className={`text-[10px] ${active ? 'text-[#007AFF]' : 'text-[#8E8E93] dark:text-brand-gray-dark'}`}>
-        {label}
-      </span>
-    </button>
   )
 }
 
