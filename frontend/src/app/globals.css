@@ -33,7 +33,16 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.75rem;
 
-    /* iOS System Colors - Light */
+    /* Light mode iOS colors */
+    --ios-system-background: 0 0% 100%;
+    --ios-system-groupedBackground: 240 4.8% 95.9%;
+    --ios-system-fill: 240 4.8% 95.9%;
+    --ios-label-primary: 0 0% 0%;
+    --ios-label-secondary: 240 3.8% 46.1%;
+    --ios-separator: 240 5.9% 90%;
+    --ios-blue: 211 100% 50%;
+    
+    /* iOS Light Mode Specific */
     --ios-background: 0 0% 100%;
     --ios-card: 0 0% 100%;
     --ios-secondary: 240 4.8% 95.9%;
@@ -71,7 +80,16 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
 
-    /* iOS System Colors - Dark */
+    /* Dark mode iOS colors */
+    --ios-system-background: 0 0% 0%;
+    --ios-system-groupedBackground: 240 3.7% 15.9%;
+    --ios-system-fill: 240 3.7% 15.9%;
+    --ios-label-primary: 0 0% 100%;
+    --ios-label-secondary: 240 5% 64.9%;
+    --ios-separator: 240 3.7% 15.9%;
+    --ios-blue: 211 100% 50%;
+
+    /* iOS Dark Mode Specific */
     --ios-background: 0 0% 0%;
     --ios-card: 240 3.7% 15.9%;
     --ios-secondary: 240 3.7% 15.9%;

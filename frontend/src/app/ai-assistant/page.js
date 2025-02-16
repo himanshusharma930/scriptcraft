@@ -58,55 +58,55 @@ export default function AiAssistantPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-[hsl(var(--ios-background))]">
+    <div className="fixed inset-0 bg-[hsl(var(--ios-system-background))]">
       <div className="relative h-full max-w-2xl mx-auto 
-                      bg-[hsl(var(--ios-card))] 
-                      shadow-[0_0_0_1px_rgba(var(--ios-border),0.05)]">
-        {/* Subtle System Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b 
-                       from-primary/[0.03] to-transparent" />
-
+                      bg-[hsl(var(--ios-system-background))]
+                      border-x border-[hsl(var(--ios-separator))]">
+        {/* Content Container */}
         <div className="relative h-full flex flex-col">
-          {/* iOS Header */}
+          {/* Header */}
           <div className="flex-none">
             <div className="sticky top-0 z-50 
-                          bg-[hsl(var(--ios-card))]/90 backdrop-blur-xl 
-                          border-b border-[hsl(var(--ios-border))]">
-              <div className="flex items-center justify-between px-4 h-[52px]">
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-9 h-9 rounded-full text-white/90 hover:text-white
-                              hover:bg-white/10 transition-colors duration-200"
-                    onClick={() => router.back()}
-                  >
-                    <ArrowLeft className="h-5 w-5" />
-                  </Button>
-                  
-                  {/* Enhanced Assistant Identity */}
-                  <div className="flex items-center gap-3.5">
-                    <div className="relative">
-                      <div className="absolute -inset-0.5 bg-gradient-to-br 
-                                    from-blue-500 to-blue-600 rounded-full blur-md 
-                                    opacity-70" />
-                      <div className="relative h-10 w-10 rounded-full 
-                                    bg-gradient-to-br from-blue-500 to-blue-600 p-[1.5px]">
-                        <div className="h-full w-full rounded-full bg-[hsl(var(--ios-card))] 
-                                      flex items-center justify-center">
-                          <Sparkles className="h-5 w-5 text-white" />
-                        </div>
+                          bg-[hsl(var(--ios-system-background))]/90 
+                          backdrop-blur-xl
+                          border-b border-[hsl(var(--ios-separator))]">
+              <div className="flex items-center px-4 h-[52px]">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="mr-3 text-[hsl(var(--ios-label-primary))] 
+                            hover:bg-[hsl(var(--ios-system-fill))]
+                            rounded-full transition-colors duration-200"
+                  onClick={() => router.back()}
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                
+                {/* Assistant Identity */}
+                <div className="flex items-center gap-3.5">
+                  <div className="relative">
+                    <div className="absolute -inset-0.5 bg-[hsl(var(--ios-blue))]
+                                  rounded-full blur-md opacity-70" />
+                    <div className="relative h-10 w-10 rounded-full 
+                                  bg-[hsl(var(--ios-blue))] p-[1.5px]">
+                      <div className="h-full w-full rounded-full 
+                                    bg-[hsl(var(--ios-system-background))] 
+                                    flex items-center justify-center">
+                        <Sparkles className="h-5 w-5 text-[hsl(var(--ios-blue))]" />
                       </div>
                     </div>
-                    <div>
-                      <h1 className="text-[17px] font-semibold text-white/90">
-                        YouTube Assistant
-                      </h1>
-                      <div className="flex items-center gap-1.5">
-                        <div className="h-[6px] w-[6px] rounded-full bg-green-500 
-                                      animate-pulse" />
-                        <p className="text-[13px] text-white/50">AI Assistant</p>
-                      </div>
+                  </div>
+                  <div>
+                    <h1 className="text-[17px] font-semibold 
+                                 text-[hsl(var(--ios-label-primary))]">
+                      YouTube Assistant
+                    </h1>
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-[6px] w-[6px] rounded-full bg-green-500 
+                                    animate-pulse" />
+                      <p className="text-[13px] text-[hsl(var(--ios-label-secondary))]">
+                        AI Assistant
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ export default function AiAssistantPage() {
             </div>
           </div>
 
-          {/* Messages Area */}
+          {/* Messages */}
           <ScrollArea className="flex-1 px-4">
             <div className="max-w-[85%] mx-auto py-4 space-y-3">
               {messages.map((msg, i) => (
@@ -127,10 +127,10 @@ export default function AiAssistantPage() {
                 >
                   <div className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-3",
-                    "shadow-sm backdrop-blur-sm",
+                    "shadow-sm",
                     msg.role === 'user' 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-[hsl(var(--ios-secondary))] text-[hsl(var(--ios-text-primary))]"
+                      ? "bg-[hsl(var(--ios-blue))] text-white" 
+                      : "bg-[hsl(var(--ios-system-fill))] text-[hsl(var(--ios-label-primary))]"
                   )}>
                     <p className="text-[15px] leading-relaxed">{msg.content}</p>
                   </div>
@@ -140,44 +140,41 @@ export default function AiAssistantPage() {
             </div>
           </ScrollArea>
 
-          {/* Enhanced Input Area */}
+          {/* Input Area */}
           <div className="fixed bottom-8 left-0 right-0 max-w-2xl mx-auto">
-            {/* Quick Actions with iOS-style Gradient */}
-            <div className="bg-gradient-to-t from-[hsl(var(--ios-background))] 
-                          via-[hsl(var(--ios-background))]/95 
+            {/* Quick Actions */}
+            <div className="bg-gradient-to-t 
+                          from-[hsl(var(--ios-system-background))] 
+                          via-[hsl(var(--ios-system-background))]/95 
                           to-transparent pt-16">
-              <QuickActions 
-                onSelect={handleQuickAction}
-              />
+              <QuickActions onSelect={handleQuickAction} />
             </div>
 
-            {/* iOS-style Input */}
-            <div className="bg-[hsl(var(--ios-card))]/95 backdrop-blur-xl px-4 py-4 
-                           border-t border-[hsl(var(--ios-border))]">
+            {/* Input Box */}
+            <div className="bg-[hsl(var(--ios-system-background))]/95 
+                          backdrop-blur-xl px-4 py-4
+                          border-t border-[hsl(var(--ios-separator))]">
               <div className="max-w-[90%] mx-auto">
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 relative">
-                    <Input
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                      placeholder="Message YouTube Assistant..."
-                      className="h-[44px] pl-4 pr-4 rounded-2xl bg-[hsl(var(--ios-secondary))] 
-                                border-[hsl(var(--ios-border))] text-[hsl(var(--ios-text-primary))] 
-                                placeholder:text-[hsl(var(--ios-text-secondary))]
-                                focus:ring-2 focus:ring-primary/50 
-                                shadow-[0_2px_8px_rgba(0,0,0,0.12)]
-                                transition-all duration-200"
-                    />
-                  </div>
+                  <Input
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="Message YouTube Assistant..."
+                    className="h-[44px] pl-4 pr-4 rounded-2xl
+                              bg-[hsl(var(--ios-system-fill))]
+                              border-[hsl(var(--ios-separator))]
+                              text-[hsl(var(--ios-label-primary))]
+                              placeholder:text-[hsl(var(--ios-label-secondary))]
+                              focus:ring-2 focus:ring-[hsl(var(--ios-blue))]"
+                  />
                   <Button
                     size="icon"
                     className={cn(
                       "h-[44px] w-[44px] rounded-full transition-all duration-200",
-                      "shadow-[0_2px_8px_rgba(0,0,0,0.12)]",
                       inputMessage.trim()
-                        ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                        : "bg-[hsl(var(--ios-secondary))] text-[hsl(var(--ios-text-secondary))]"
+                        ? "bg-[hsl(var(--ios-blue))] text-white"
+                        : "bg-[hsl(var(--ios-system-fill))] text-[hsl(var(--ios-label-secondary))]"
                     )}
                     onClick={handleSendMessage}
                     disabled={!inputMessage.trim() || isLoading}
