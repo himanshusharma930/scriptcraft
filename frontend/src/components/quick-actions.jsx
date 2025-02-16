@@ -1,57 +1,94 @@
 "use client"
 
+import { useRef, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { 
   Lightbulb, 
   Video, 
-  FileText, 
-  Sparkles, 
-  Palette, 
-  BarChart, 
-  Hash, 
   Wand2,
-  MessageCircle,
   Target
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const QUICK_ACTIONS = [
-  { icon: Lightbulb, label: "Content Ideas", color: "from-yellow-500 to-orange-500" },
-  { icon: Video, label: "Script Writing", color: "from-blue-500 to-indigo-500" },
-  { icon: MessageCircle, label: "Hook Writing", color: "from-green-500 to-emerald-500" },
-  { icon: Palette, label: "Thumbnail Ideas", color: "from-purple-500 to-pink-500" },
-  { icon: Hash, label: "Tags & SEO", color: "from-red-500 to-rose-500" },
-  { icon: BarChart, label: "Analytics Tips", color: "from-cyan-500 to-blue-500" },
-  { icon: Target, label: "Audience Growth", color: "from-violet-500 to-purple-500" },
-  { icon: Wand2, label: "Optimization", color: "from-amber-500 to-yellow-500" }
+  {
+    icon: Lightbulb,
+    label: "Content Ideas",
+    gradient: "from-orange-400 to-pink-500"
+  },
+  {
+    icon: Video,
+    label: "Script Writing",
+    gradient: "from-blue-500 to-indigo-500"
+  },
+  {
+    icon: Wand2,
+    label: "Optimization",
+    gradient: "from-green-400 to-emerald-500"
+  },
+  {
+    icon: Target,
+    label: "Audience",
+    gradient: "from-purple-400 to-violet-500"
+  }
 ]
 
-export function QuickActions({ onActionSelect }) {
+export function QuickActions({ onSelect }) {
+  const scrollRef = useRef(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+      setCanScrollLeft(scrollLeft > 0)
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10)
+    }
+  }
+
+  useEffect(() => {
+    checkScroll()
+    window.addEventListener('resize', checkScroll)
+    return () => window.removeEventListener('resize', checkScroll)
+  }, [])
+
   return (
     <div className="relative">
-      {/* Gradient Fades */}
-      <div className="absolute left-0 top-0 bottom-0 w-8 
-                      bg-gradient-to-r from-black to-transparent z-10" />
-      <div className="absolute right-0 top-0 bottom-0 w-8 
-                      bg-gradient-to-l from-black to-transparent z-10" />
+      {/* Scroll Indicators */}
+      {canScrollLeft && (
+        <div className="absolute left-0 top-0 bottom-0 w-12 
+                        bg-gradient-to-r from-[hsl(var(--ios-system-background))] 
+                        to-transparent z-10 pointer-events-none" />
+      )}
+      {canScrollRight && (
+        <div className="absolute right-0 top-0 bottom-0 w-12 
+                        bg-gradient-to-l from-[hsl(var(--ios-system-background))] 
+                        to-transparent z-10 pointer-events-none" />
+      )}
       
-      {/* Scrolling Container */}
-      <div className="overflow-x-auto hide-scrollbar">
-        <div className="flex gap-2 px-4 py-3">
+      {/* Actions Container */}
+      <div 
+        ref={scrollRef}
+        onScroll={checkScroll}
+        className="overflow-x-auto hide-scrollbar px-4 py-3"
+      >
+        <div className="flex gap-2">
           {QUICK_ACTIONS.map((action) => (
             <Button
               key={action.label}
-              onClick={() => onActionSelect(action.label)}
+              onClick={() => onSelect?.(action.label)}
               className={cn(
-                "flex-none h-10 px-4 rounded-full",
-                "bg-gradient-to-r border-0",
+                "flex-none h-11 px-4 rounded-full",
+                "bg-gradient-to-r",
+                action.gradient,
+                "text-white font-medium",
+                "shadow-sm",
                 "hover:opacity-90 active:scale-95",
-                "transition-all duration-200",
-                action.color
+                "transition-all duration-200"
               )}
             >
-              <action.icon className="h-4 w-4 mr-2 text-white" />
-              <span className="text-sm font-medium text-white whitespace-nowrap">
+              <action.icon className="h-4 w-4 mr-2" />
+              <span className="text-sm whitespace-nowrap">
                 {action.label}
               </span>
             </Button>
