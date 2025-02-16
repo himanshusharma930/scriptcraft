@@ -4,135 +4,160 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, Settings, Home, Globe, User, Plus, FileText } from "lucide-react"
+import { Search, Filter, Settings, Home as HomeIcon, FileText, Globe, User, Plus } from "lucide-react"
 import { CreateProjectSheet } from "@/components/create-project-sheet"
 import { CreateButton } from "@/components/create-button"
 import { useState } from "react"
 
-function ProjectCard({ status, title, description, date }) {
-  return (
-    <Card className="p-4">
-      <div className="flex justify-between items-start mb-2">
-        <Badge variant={status === "In-Progress" ? "default" : "secondary"}>
-          {status}
-        </Badge>
-        <span className="text-sm text-gray-500">{date}</span>
-      </div>
-      <h3 className="text-lg font-semibold mb-1">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
-      <div className="w-full h-2 bg-gray-100 rounded-full mt-4">
-        <div className="w-1/3 h-full bg-green-500 rounded-full"></div>
-      </div>
-    </Card>
-  )
-}
-
-function NavButton({ icon, label, active }) {
-  return (
-    <button 
-      className={`flex flex-col items-center px-4 py-1 transition-colors
-        ${active ? 'text-primary' : 'text-gray-500'}`}
-    >
-      {icon}
-      <span className="text-xs mt-1">{label}</span>
-    </button>
-  )
-}
-
 export default function HomePage() {
   const [createOpen, setCreateOpen] = useState(false)
+  const [activeFilter, setActiveFilter] = useState("All")
 
   return (
-    <div className="container max-w-md mx-auto px-4 pb-20">
-      {/* Header */}
-      <div className="flex justify-between items-center py-4">
-        <h1 className="text-2xl font-bold">My Projects</h1>
-        <Button variant="ghost" size="icon">
-          <Settings className="h-5 w-5" />
+    <div className="container max-w-md mx-auto px-4 pb-[88px] bg-[#F2F2F7]">
+      {/* iOS-style Header */}
+      <div className="flex justify-between items-center py-4 sticky top-0 bg-[#F2F2F7]/80 backdrop-blur-lg z-10">
+        <h1 className="text-[34px] font-semibold text-[#1C1C1E] leading-tight">
+          My Projects
+        </h1>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          className="w-10 h-10 rounded-full hover:bg-black/5 transition-colors"
+        >
+          <Settings className="h-6 w-6 text-[#007AFF]" />
         </Button>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-        <Input 
-          placeholder="Search projects" 
-          className="pl-9 pr-12"
-        />
-        <Button variant="ghost" size="icon" className="absolute right-2 top-2">
-          <Filter className="h-4 w-4" />
-        </Button>
+      {/* iOS Search Bar */}
+      <div className="relative mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8E8E93]" />
+          <Input 
+            placeholder="Search projects"
+            className="h-[36px] pl-11 pr-10 bg-[#E5E5EA] border-0 rounded-lg 
+                     placeholder:text-[#8E8E93] focus-visible:ring-2 focus-visible:ring-[#007AFF]"
+          />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+          >
+            <Filter className="h-5 w-5 text-[#007AFF]" />
+          </Button>
+        </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2 mb-6">
-        <Button variant="default" className="rounded-full">All</Button>
-        <Button variant="ghost" className="rounded-full">Draft</Button>
-        <Button variant="ghost" className="rounded-full">In-Progress</Button>
-        <Button variant="ghost" className="rounded-full">Completed</Button>
+      {/* iOS Segmented Control */}
+      <div className="bg-[#E5E5EA] p-1 rounded-lg mb-6 flex">
+        {["All", "Draft", "In-Progress", "Completed"].map((filter) => (
+          <Button
+            key={filter}
+            variant="ghost"
+            className={`
+              flex-1 h-8 rounded-md text-sm font-medium transition-all
+              ${activeFilter === filter 
+                ? 'bg-white text-[#1C1C1E] shadow-sm' 
+                : 'text-[#8E8E93] hover:text-[#1C1C1E]'
+              }
+            `}
+            onClick={() => setActiveFilter(filter)}
+          >
+            {filter}
+          </Button>
+        ))}
       </div>
 
       {/* Stats Card */}
-      <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 mb-6">
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-3xl font-bold">2</div>
-            <div className="text-sm">Total Projects</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold">1</div>
-            <div className="text-sm">In Progress</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold">0</div>
-            <div className="text-sm">Completed</div>
-          </div>
+      <Card className="bg-gradient-to-r from-[#007AFF] to-[#0A84FF] mb-6 overflow-hidden">
+        <div className="px-6 py-5 grid grid-cols-3 gap-4">
+          <StatItem number="2" label="Total Projects" />
+          <StatItem number="1" label="In Progress" />
+          <StatItem number="0" label="Completed" />
         </div>
       </Card>
 
-      {/* Project Cards */}
+      {/* Project List */}
       <div className="space-y-4">
         <ProjectCard 
           status="In-Progress"
           title="How AI is Changing Content Creation"
           description="An in-depth look at AI tools for content creators"
           date="2024-02-20"
+          progress={65}
         />
         <ProjectCard 
           status="Draft"
           title="Top 10 Programming Languages 2024"
           description="Comprehensive guide to trending programming languages"
           date="2024-02-19"
+          progress={30}
         />
       </div>
 
-      {/* Backdrop blur when sheet is open */}
-      {createOpen && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" />
-      )}
-
-      <CreateProjectSheet 
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-      />
-
-      {/* Updated Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t">
-        <div className="relative flex justify-around items-center py-2 max-w-md mx-auto">
-          {/* Left Nav Items */}
-          <NavButton icon={<Home className="h-6 w-6" />} label="Projects" active />
-          <NavButton icon={<Globe className="h-6 w-6" />} label="Research" />
-          
-          {/* Center Create Button */}
-          <div className="relative -top-6">
+      {/* iOS Tab Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F2F2F7]/90 backdrop-blur-lg border-t border-[#C6C6C8]">
+        <div className="flex justify-around items-center h-[83px] pt-2 pb-7 px-6 max-w-md mx-auto">
+          <TabBarItem icon={<HomeIcon />} label="Projects" active />
+          <TabBarItem icon={<Globe />} label="Research" />
+          <div className="-mt-8">
             <CreateButton onClick={() => setCreateOpen(true)} />
           </div>
-
-          {/* Right Nav Items */}
-          <NavButton icon={<FileText className="h-6 w-6" />} label="Publishing" />
-          <NavButton icon={<User className="h-6 w-6" />} label="Profile" />
+          <TabBarItem icon={<FileText />} label="Publishing" />
+          <TabBarItem icon={<User />} label="Profile" />
         </div>
       </div>
+
+      <CreateProjectSheet open={createOpen} onOpenChange={setCreateOpen} />
     </div>
+  )
+}
+
+function StatItem({ number, label }) {
+  return (
+    <div className="text-center">
+      <div className="text-3xl font-semibold text-white mb-1">{number}</div>
+      <div className="text-sm text-white/90">{label}</div>
+    </div>
+  )
+}
+
+function ProjectCard({ status, title, description, date, progress }) {
+  return (
+    <Card className="p-4 bg-white border-[#E5E5EA] shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex justify-between items-start mb-3">
+        <Badge 
+          variant={status === "In-Progress" ? "default" : "secondary"}
+          className={`
+            ${status === "In-Progress" ? 'bg-[#007AFF] hover:bg-[#007AFF]/90' : 'bg-[#E5E5EA]'}
+            rounded-full px-3 py-1 text-xs font-medium
+          `}
+        >
+          {status}
+        </Badge>
+        <span className="text-sm text-[#8E8E93]">{date}</span>
+      </div>
+      <h3 className="text-lg font-semibold text-[#1C1C1E] mb-1">{title}</h3>
+      <p className="text-sm text-[#8E8E93] mb-4">{description}</p>
+      <div className="w-full h-2 bg-[#E5E5EA] rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-[#34C759] transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </Card>
+  )
+}
+
+function TabBarItem({ icon, label, active }) {
+  return (
+    <button className="flex flex-col items-center">
+      <div className={`mb-1 ${active ? 'text-[#007AFF]' : 'text-[#8E8E93]'}`}>
+        {icon}
+      </div>
+      <span className={`text-[10px] ${active ? 'text-[#007AFF]' : 'text-[#8E8E93]'}`}>
+        {label}
+      </span>
+    </button>
   )
 }
