@@ -1,22 +1,27 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { motion, AnimatePresence } from "framer-motion"
 
-export function MessageBubble({ message, onSuggestionSelect }) {
-  const isAssistant = message.type === 'assistant'
+export function MessageBubble({ message, isStreaming }) {
+  const isAssistant = message.role === 'assistant'
 
   return (
-    <div className={cn(
-      "flex",
-      isAssistant ? 'justify-start' : 'justify-end'
-    )}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        "flex",
+        isAssistant ? 'justify-start' : 'justify-end'
+      )}
+    >
       <div className={cn(
         "max-w-[85%] rounded-2xl px-4 py-3",
         "transition-all duration-200",
+        "shadow-ios",
         isAssistant 
           ? "bg-brand-gray-100 dark:bg-brand-dark-secondary" 
-          : "bg-brand-blue-start dark:bg-brand-blue-dark",
-        "shadow-ios"
+          : "bg-brand-blue-start dark:bg-brand-blue-dark"
       )}>
         <p className={cn(
           "text-[15px] leading-relaxed",
@@ -25,20 +30,17 @@ export function MessageBubble({ message, onSuggestionSelect }) {
             : "text-white"
         )}>
           {message.content}
+          {isStreaming && (
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ repeat: Infinity, duration: 1 }}
+            >
+              ▋
+            </motion.span>
+          )}
         </p>
-
-        {/* Loading Animation */}
-        {message.isLoading && (
-          <div className="flex gap-1.5 mt-2">
-            <div className="w-2 h-2 rounded-full bg-brand-gray-300 dark:bg-brand-gray-dark 
-                           animate-bounce" />
-            <div className="w-2 h-2 rounded-full bg-brand-gray-300 dark:bg-brand-gray-dark 
-                           animate-bounce delay-100" />
-            <div className="w-2 h-2 rounded-full bg-brand-gray-300 dark:bg-brand-gray-dark 
-                           animate-bounce delay-200" />
-          </div>
-        )}
       </div>
-    </div>
+    </motion.div>
   )
 }

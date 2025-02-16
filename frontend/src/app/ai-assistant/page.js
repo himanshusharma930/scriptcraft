@@ -9,19 +9,17 @@ import { MessageBubble } from "@/components/message-bubble"
 import { QuickActions } from "@/components/quick-actions"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-
-const INITIAL_MESSAGE = {
-  type: 'assistant',
-  content: "Hi! I'm your YouTube content assistant. How can I help you create amazing videos today?",
-  showSuggestions: true
-}
+import { generateChatCompletion } from "@/lib/ai-service"
+import { useToast } from "@/hooks/use-toast"
 
 export default function AiAssistantPage() {
   const router = useRouter()
   const [message, setMessage] = useState("")
-  const [messages, setMessages] = useState([INITIAL_MESSAGE])
+  const [messages, setMessages] = useState([])
   const [isRecording, setIsRecording] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
   const scrollRef = useRef(null)
+  const { toast } = useToast()
 
   // Auto scroll
   useEffect(() => {
@@ -34,26 +32,51 @@ export default function AiAssistantPage() {
   const handleSend = async () => {
     if (!message.trim()) return
     
-    setMessages(prev => [...prev, { type: 'user', content: message }])
+    // Add user message
+    const userMessage = { role: 'user', content: message }
+    setMessages(prev => [...prev, userMessage])
     setMessage("")
-    
-    // Simulate AI response
-    setMessages(prev => [...prev, {
-      type: 'assistant',
-      content: "",
-      isLoading: true
-    }])
+    setIsTyping(true)
 
-    setTimeout(() => {
+    try {
+      const response = await generateChatCompletion([
+        { role: 'system', content: 'You are a helpful YouTube content creation assistant.' },
+        ...messages,
+        userMessage
+      ])
+
+      // Handle streaming response
+      let assistantMessage = ""
+      for await (const chunk of response) {
+        assistantMessage += chunk.choices[0]?.delta?.content || ""
+        setMessages(prev => [
+          ...prev.slice(0, -1),
+          {
+            role: 'assistant',
+            content: assistantMessage,
+            isStreaming: true
+          }
+        ])
+      }
+
+      // Final message
       setMessages(prev => [
         ...prev.slice(0, -1),
         {
-          type: 'assistant',
-          content: "I'll help you create engaging content! Let's explore some options:",
-          showSuggestions: true
+          role: 'assistant',
+          content: assistantMessage,
+          isStreaming: false
         }
       ])
-    }, 1500)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate response. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsTyping(false)
+    }
   }
 
   const handleQuickAction = (action) => {
@@ -150,7 +173,7 @@ export default function AiAssistantPage() {
             
             <Button
               onClick={handleSend}
-              disabled={!message.trim()}
+              disabled={!message.trim() || isTyping}
               className={cn(
                 "h-10 w-10 rounded-full",
                 "bg-brand-blue-start dark:bg-brand-blue-dark",
